@@ -1,19 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Controller_Private extends Controller_Base {
+class Controller_CL4_Private extends Controller_Base {
 	public $auth_required = TRUE;
 
 	/**
 	 * The current logged in user model.
 	 * @var ORM Model
 	 */
-	public $user;
+	protected $user;
 
 	/**
 	 * The id parameter in the route - if there is one, NULL otherwise.
 	 * @var int
 	 */
-	public $id;
+	protected $id;
 
 	public function before() {
 		$this->id = Kohana_Request::$current->param('id');

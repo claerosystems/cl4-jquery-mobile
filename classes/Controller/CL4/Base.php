@@ -4,7 +4,7 @@
  * A default base Controller class.
  * Some of the functionality is required by cl4 and other modules.
  */
-class Controller_Base extends Controller_Template {
+class Controller_CL4_Base extends Controller_Template {
 	/**
 	 * The template to use. The string is replaced with the View in before().
 	 * @var  View
@@ -137,6 +137,7 @@ class Controller_Base extends Controller_Template {
 			// set up template parameters for optional use when generating views in the main controllers
 			// NB. these only get used when you pass $this->template_parameters to your template, they are not part of the main template parameters (below)
 			$this->template_parameters['session'] = $this->session;
+
 			// set up the main template parameters
 			$this->template->session = $this->session; // for debug purposes anyway
 
@@ -167,14 +168,6 @@ class Controller_Base extends Controller_Template {
 					//'data-rel' => 'dialog',
 				)
 			);
-			$this->template_parameters['panel_button_attributes'] = ARR::merge(
-				$this->template_parameters['button_default_attributes'],
-				array(
-					'data-position' => 'left',
-					'data-display' => 'overlay',
-					'data-icon' => 'bars',
-				)
-			);
 			$this->template_parameters['back_button_attributes'] = ARR::merge(
 				$this->template_parameters['button_default_attributes'],
 				array(
@@ -197,6 +190,12 @@ class Controller_Base extends Controller_Template {
 		// set up the default template values for the base template
 		$this->initialize_template();
 	} // function before
+
+	public function action_404() {
+		$this->template->page_name = '404';
+		$this->template->page_title = 'Page not found';
+		$this->template->body_html = Base::get_view('cl4/404', $this->template_parameters);
+	}
 
 	/**
 	 * Automatically executed after the controller action. Can be used to apply
@@ -227,31 +226,13 @@ class Controller_Base extends Controller_Template {
 		} // if
 
 		parent::after();
+		if ($this->auto_render === TRUE) {
+			//$this->response->check_cache( null, $this->request );
+
+			// don't cache the actual php-generated page content
+			$this->response->headers(array('Cache-Control' => 'no-cache'));
+		}
 	} // function after
-
-	/**
-	 * Setup the default template values.
-	 *
-	 * @return void
-	 */
-	protected function initialize_template() {
-		if ($this->auto_render) {
-			// Initialize default values
-			$this->template->logged_in = Auth::instance()->logged_in();
-			if ($this->template->logged_in) {
-				$this->template->user = Auth::instance()->get_user();
-			}
-
-			// set some empty variables
-			$this->template->page_name = $this->page_name;
-			$this->template->page_title = $this->page_title;
-			$this->template->meta_tags = array();
-			$this->template->body_class = '';
-			$this->template->pre_message = '';
-			$this->template->body_html = '';
-			$this->template->on_load_js = '';
-		} // if
-	}
 
 	/**
 	 * Checks if the user is logged in and if they have permissions to the current action
@@ -325,6 +306,30 @@ class Controller_Base extends Controller_Template {
 	 */
 	protected function get_login_redirect_query() {
 		return URL::array_to_query(array('redirect' => $this->request->uri() . '?' . http_build_query($_GET)), '&');
+	}
+
+	/**
+	 * Setup the default template values.
+	 *
+	 * @return void
+	 */
+	protected function initialize_template() {
+		if ($this->auto_render) {
+			// Initialize default values
+			$this->template->logged_in = Auth::instance()->logged_in();
+			if ($this->template->logged_in) {
+				$this->template->user = Auth::instance()->get_user();
+			}
+
+			// set some empty variables
+			$this->template->page_name = $this->page_name;
+			$this->template->page_title = $this->page_title;
+			$this->template->meta_tags = array();
+			$this->template->body_class = '';
+			$this->template->pre_message = '';
+			$this->template->body_html = '';
+			$this->template->on_load_js = '';
+		} // if
 	}
 
 	/**

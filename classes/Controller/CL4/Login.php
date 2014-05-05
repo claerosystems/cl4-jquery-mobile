@@ -91,55 +91,16 @@ class Controller_CL4_Login extends Controller_Base {
 
 		// Get number of login attempts this session
 		$attempts = Arr::path($this->session, $login_config['session_key'] . '.attempts', 0);
-		$force_captcha = Arr::path($this->session, $login_config['session_key'] . '.force_captcha', FALSE);
-
-		// If more than three login attempts, add a captcha to form
-		$captcha_required = ($force_captcha || $attempts > $login_config['failed_login_captcha_display']);
 
 		// Update number of login attempts
 		++$attempts;
 		$this->session[$login_config['session_key']]['attempts'] = $attempts;
 
-		// load recaptcha
-		// do this here because there are likely to be a lot of accesses to this action that will never make it to here
-		// loading it here will save server time finding (searching) and loading recaptcha
-		Kohana::load(Kohana::find_file('vendor/recaptcha', 'recaptchalib'));
-
 		// verify that the company database and user table exists
-
-
 		try {
 			// $_POST is not empty
 			if ( ! empty($_POST)) {
-				$human_verified = FALSE;
-				$captcha_received = FALSE;
-
-				// If recaptcha was set and is required
-				if ($captcha_required && isset($_POST['recaptcha_challenge_field']) && isset($_POST['recaptcha_response_field'])) {
-					$captcha_received = TRUE;
-					// Test if recaptcha is valid
-					$resp = recaptcha_check_answer(RECAPTCHA_PRIVATE_KEY, $_SERVER['REMOTE_ADDR'], $_POST['recaptcha_challenge_field'], $_POST['recaptcha_response_field']);
-					$human_verified = $resp->is_valid;
-					Message::add('ReCAPTCHA valid: ' . ($human_verified ? 'Yes' : 'No'), Message::$debug);
-				} // if
-
-				// if the captcha is required but we have not verified the human
-				if ($captcha_required && ! $human_verified) {
-					// increment the failed login count on the user
-					$user = ORM::factory('User');
-					$user->add_login_where($username)
-						->find();
-
-					// increment the login count and record the login attempt
-					if ($user->loaded()) {
-						$user->increment_failed_login();
-					}
-
-					$user->add_auth_log(Kohana::$config->load('cl4login.auth_type.too_many_attempts'), $username);
-					Message::message('user', 'recaptcha_not_valid');
-
-					// Check Auth and log the user in if their username and password is valid
-				} else if (($login_messages = Auth::instance()->login($username, $password, FALSE, $human_verified)) === TRUE) {
+				if (($login_messages = Auth::instance()->login($username, $password, FALSE)) === TRUE) {
 					$user = Auth::instance()->get_user();
 
 					// user has to update their profile or password
@@ -179,12 +140,6 @@ class Controller_CL4_Login extends Controller_Base {
 
 					// If login failed (captcha and/or wrong credentials)
 				} else {
-					// force captcha may have changed within Auth::login()
-					$force_captcha = Arr::path($this->session, $login_config['session_key'] . '.force_captcha', FALSE);
-					if ( ! $captcha_required && $force_captcha) {
-						$captcha_required = TRUE;
-					}
-
 					if ( ! empty($login_messages)) {
 						foreach ($login_messages as $message_data) {
 							list($message, $values) = $message_data;
@@ -192,14 +147,8 @@ class Controller_CL4_Login extends Controller_Base {
 						}
 					}
 
-					// determine if we should be displaying a recaptcha message
-					if ( ! $human_verified && $captcha_received) {
-						Message::message('user', 'recaptcha_not_valid', array(), Message::$error);
-					} else if ($captcha_required && ! $captcha_received) {
-						Message::message('user', 'enter_recaptcha', array(), Message::$error);
-					}
-				} // if
-			} // if $_POST
+				}
+			}
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('user', 'username.invalid');
 		}
@@ -213,8 +162,7 @@ class Controller_CL4_Login extends Controller_Base {
 		$this->template->body_html = View::factory('cl4/cl4login/login')
 			->set('redirect', $redirect)
 			->set('username', $username)
-			->set('password', $password)
-			->set('add_captcha', $captcha_required);
+			->set('password', $password);
 	}
 
 	/**
@@ -233,6 +181,10 @@ class Controller_CL4_Login extends Controller_Base {
 			$this->redirect(URL::site(Route::get($auth_config['default_login_redirect'])->uri($auth_config['default_login_redirect_params'])));
 		}
 	} // function login_success_redirect
+
+	public function action_login() {
+		$this->action_index();
+	}
 
 	/**
 	* Log the user out and redirect to the login page.

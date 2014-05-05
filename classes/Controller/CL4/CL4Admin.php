@@ -138,7 +138,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	*/
 	protected function add_css() {
 		if ($this->auto_render) {
-			$this->add_style('dbadmin', 'css/dbadmin.css');
+			//$this->add_style('dbadmin', 'css/dbadmin.css');
 		}
 	} // function add_css
 
