@@ -82,6 +82,13 @@ class Model_CL4_User extends Model_Auth_User {
 				'default_value' => 1,
 			),
 		),
+		'last_login_ip' => array(
+			'field_type' => 'Text',
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'maxlength' => 64,
+			),
+		),
 		'login_count' => array(
 			'field_type'     => 'Text',
 			'list_flag'      => TRUE,
@@ -150,6 +157,10 @@ class Model_CL4_User extends Model_Auth_User {
 			'view_flag'      => TRUE,
 			'is_nullable'    => FALSE,
 		),
+		'settings' => array(
+			'field_type' => 'TextArea',
+			'is_nullable' => FALSE,
+		),
 	);
 
 	/**
@@ -161,9 +172,11 @@ class Model_CL4_User extends Model_Auth_User {
 
 	// relationships
 	protected $_has_many = array(
-		'user_token' => array(
-			'model'       => 'User_Token',
+		'auth_log' => array(
+			'model'       => 'Auth_Log',
 			'foreign_key' => 'user_id',
+			'through'     => 'auth_log',
+			'far_key'     => 'id',
 		),
 		'group' => array(
 			'model'       => 'Group',
@@ -172,11 +185,9 @@ class Model_CL4_User extends Model_Auth_User {
 			'foreign_key' => 'user_id',
 			'field_label' => 'Permission Groups',
 		),
-		'auth_log' => array(
-			'model'       => 'Auth_Log',
+		'user_token' => array(
+			'model'       => 'User_Token',
 			'foreign_key' => 'user_id',
-			'through'     => 'auth_log',
-			'far_key'     => 'id',
 		),
 	);
 
@@ -197,6 +208,7 @@ class Model_CL4_User extends Model_Auth_User {
 		50 => 'first_name',
 		60 => 'last_name',
 		70 => 'active_flag',
+		75 => 'last_login_ip',
 		80 => 'login_count',
 		90 => 'last_login',
 		100 => 'failed_login_count',
@@ -204,6 +216,7 @@ class Model_CL4_User extends Model_Auth_User {
 		120 => 'reset_token',
 		130 => 'force_update_password_flag',
 		140 => 'force_update_profile_flag',
+		145 => 'settings',
 		150 => 'group',
 	);
 
@@ -223,95 +236,28 @@ class Model_CL4_User extends Model_Auth_User {
 	protected $_default_settings = array();
 
 	/**
-	 * Rule definitions for validation
+	 * create the name field as well
 	 *
-	 * @return array
+	 * @param   int  Type of Database query
+	 * @return  ORM
 	 */
-	public function rules() {
-		return array(
-			'username' => array(
-				array('not_empty'),
-				array('min_length', array(':value', 6)),
-				array('max_length', array(':value', 200)),
-				array('email'),
-				array(array($this, 'unique'), array('username', ':value')),
-			),
-			'first_name' => array(
-				array('not_empty'),
-				array('max_length', array(':value', 100)),
-			),
-			'last_name' => array(
-				array('not_empty'),
-				array('max_length', array(':value', 100)),
-			),
-			'password' => array(
-				// these rules are also in Model_User_Admin
-				array('not_empty'),
-				// the min length won't have much an affect anywhere because before the rules are run, the filter to hash the password will already have been run
-				// therefore, this is only here so it can be used else where, like the profile edit
-				array('min_length', array(':value', 6)),
-			),
-		);
-	} // function rules
+	protected function _build($type) {
+		$this->select($this->_object_name . '.*', array(DB::expr("CONCAT(" . $this->_db->quote_column($this->_object_name) . ".`first_name`,' '," . $this->_db->quote_column($this->_object_name) . ".`last_name`)"), 'name'));
+		//echo Debug::vars($this->_options);exit;
+		//todo: don't have options at this point, so this does not work: disabled for now with "0 &&"
 
-	/**
-	 * Labels for columns
-	 *
-	 * @return array
-	 */
-	public function labels() {
-		return array(
-			'id'                          => 'ID',
-			'expiry_date'                 => 'Date Expired',
-			'username'                    => 'Email (Username)',
-			'password'                    => 'Password',
-			'password_confirm'            => 'Confirm Password',
-			'first_name'                  => 'First Name',
-			'last_name'                   => 'Last Name',
-			'active_flag'                 => 'Active',
-			'login_count'                 => 'Login Count',
-			'last_login'                  => 'Last Login',
-			'failed_login_count'          => 'Failed Login Count',
-			'last_failed_login'           => 'Last Failed Login',
-			'reset_token'                 => 'Reset Password Token',
-			'force_update_password_flag'  => 'Force Password Update',
-			'force_update_profile_flag'   => 'Force Profile Update',
-		);
-	} // function labels
+		// add the filter if this is a select
+		if (0 && $type === Database::SELECT) {
+			if (empty($this->_options['show_inactive'])) {
+				$this->_db_pending[] = array(
+					'name' => 'where',
+					'args' => array('active_flag', '=', 1),
+				);
+			}
+		}
 
-	/**
-	 * Filter definitions, run everytime a field is set
-	 *
-	 * @return array
-	 */
-	public function filters() {
-		return array(
-			'username' => array(array('trim')),
-			'first_name' => array(array('trim')),
-			'last_name' => array(array('trim')),
-			'password' => array(array(array($this, 'hash_password'))),
-			'password_confirm' => array(array(array($this, 'hash_password'))),
-		);
-	} // function filters
-
-	/**
-	* Increments the number of failed login attempts and sets the last failed attempt date/time.
-	* After saving, it retrieves the model again so we now have the new failed attempt count.
-	*
-	* @return  ORM
-	*/
-	public function increment_failed_login() {
-		$this->_log_next_query = FALSE;
-
-		$this->failed_login_count = DB::expr('failed_login_count + 1');
-		$this->last_failed_login = DB::expr('NOW()');
-		// save and then retrieve the record so the object is updated with the failed count and date
-		$this->is_valid()
-			->save()
-			->reload();
-
-		return $this;
-	} // function increment_failed_login
+		return parent::_build($type);
+	} // function _build
 
 	/**
 	* Add an auth log
@@ -381,11 +327,113 @@ class Model_CL4_User extends Model_Auth_User {
 		// Set the last login date
 		$this->last_login = DB::expr('NOW()');
 
+		// Remember the user IP address
+		$this->last_login_ip = $_SERVER['REMOTE_ADDR'];
+
 		// Save the user
 		$this->save();
 
+		// setup the user environment
+		//CL4::set_environment($this);
+
 		return $this;
 	} // function complete_login
+
+	/**
+	 * Filter definitions, run everytime a field is set
+	 *
+	 * @return array
+	 */
+	public function filters() {
+		return array(
+			'username' => array(array('trim')),
+			'first_name' => array(array('trim')),
+			'last_name' => array(array('trim')),
+			'password' => array(array(array($this, 'hash_password'))),
+			'password_confirm' => array(array(array($this, 'hash_password'))),
+		);
+	} // function filters
+
+	/**
+	 * Returns the link to the gravatar for this user.
+	 *
+	 * @param int $size
+	 *
+	 * @return string
+	 */
+	public function get_gravatar($size = 40) {
+		return CL4::get_gravatar($this->username, $size);
+	}
+
+	/**
+	 * Hash the string, but only when the string is not empty
+	 * Useful when updating the user, but the password is not being updated even though the field is in the post
+	 *
+	 * @param   string  $str  The password
+	 * @return  string  The hashed password or NULL when no hashing was done
+	 */
+	public function hash_password($str) {
+		if ( ! empty($str)) {
+			return Auth::instance()->hash($str);
+		}
+
+		return NULL;
+	} // function hash_password
+
+	/**
+	 * Increments the number of failed login attempts and sets the last failed attempt date/time.
+	 * After saving, it retrieves the model again so we now have the new failed attempt count.
+	 *
+	 * @return  ORM
+	 */
+	public function increment_failed_login() {
+		$this->_log_next_query = FALSE;
+
+		$this->failed_login_count = DB::expr('failed_login_count + 1');
+		$this->last_failed_login = DB::expr('NOW()');
+		// save and then retrieve the record so the object is updated with the failed count and date
+		$this->is_valid()
+			->save()
+			->reload();
+
+		return $this;
+	} // function increment_failed_login
+
+	/**
+	 * Labels for columns
+	 *
+	 * @return array
+	 */
+	public function labels() {
+		return array(
+			'id'                          => 'ID',
+			'expiry_date'                 => 'Date Expired',
+			'username'                    => 'Email (Username)',
+			'password'                    => 'Password',
+			'password_confirm'            => 'Confirm Password',
+			'first_name'                  => 'First Name',
+			'last_name'                   => 'Last Name',
+			'active_flag'                 => 'Active',
+			'login_count'                 => 'Login Count',
+			'last_login_ip'               => 'Last Login IP',
+			'last_login'                  => 'Last Login',
+			'failed_login_count'          => 'Failed Login Count',
+			'last_failed_login'           => 'Last Failed Login',
+			'reset_token'                 => 'Reset Password Token',
+			'force_update_password_flag'  => 'Force Password Update',
+			'force_update_profile_flag'   => 'Force Profile Update',
+			'settings'                    => 'Settings',
+		);
+	} // function labels
+
+	/**
+	 * Returns the formatted full name for this user:  firstname lastname.
+	 *
+	 * @return string
+	 */
+	public function name() {
+		return $this->first_name . ' ' . $this->last_name;
+	}
 
 	/**
 	* Checks to see if the user has the permission assigned to them through groups
@@ -411,6 +459,38 @@ class Model_CL4_User extends Model_Auth_User {
 
 		return ($rows > 0);
 	} // function permission
+
+	/**
+	 * Rule definitions for validation
+	 *
+	 * @return array
+	 */
+	public function rules() {
+		return array(
+			'username' => array(
+				array('not_empty'),
+				array('min_length', array(':value', 6)),
+				array('max_length', array(':value', 200)),
+				array('email'),
+				array(array($this, 'unique'), array('username', ':value')),
+			),
+			'first_name' => array(
+				array('not_empty'),
+				array('max_length', array(':value', 100)),
+			),
+			'last_name' => array(
+				array('not_empty'),
+				array('max_length', array(':value', 100)),
+			),
+			'password' => array(
+				// these rules are also in Model_User_Admin
+				array('not_empty'),
+				// the min length won't have much an affect anywhere because before the rules are run, the filter to hash the password will already have been run
+				// therefore, this is only here so it can be used else where, like the profile edit
+				array('min_length', array(':value', 6)),
+			),
+		);
+	} // function rules
 
 	/**
 	* Sets or retrieves a setting.  If the setting does not exist, it is created.
@@ -477,21 +557,6 @@ class Model_CL4_User extends Model_Auth_User {
 			throw new Kohana_Exception('More than 2 or 0 function arguments were received for setting or getting a user setting');
 		} // if
 	} // function setting
-
-	/**
-	* Hash the string, but only when the string is not empty
-	* Useful when updating the user, but the password is not being updated even though the field is in the post
-	*
-	* @param   string  $str  The password
-	* @return  string  The hashed password or NULL when no hashing was done
-	*/
-	public function hash_password($str) {
-		if ( ! empty($str)) {
-			return Auth::instance()->hash($str);
-		}
-
-		return NULL;
-	} // function hash_password
 
 	/**
 	* Sets the password in the model without hashing it

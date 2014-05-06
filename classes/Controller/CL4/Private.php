@@ -38,6 +38,9 @@ class Controller_CL4_Private extends Controller_Base {
 	}
 
 	public function action_index() {
-		$this->template->body_html = 'Private controller: hello, world!';
+		$this->template->page_name = 'dashboard';
+		$this->template->page_title = __('Dashboard');
+
+		$this->template->body_html = CL4::get_view('dashboard/index', $this->template_parameters);
 	}
 }

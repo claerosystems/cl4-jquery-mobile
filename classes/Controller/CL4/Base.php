@@ -90,6 +90,7 @@ class Controller_CL4_Base extends Controller_Template {
 		parent::before();
 
 		// initialize the locale if there are allowed languages
+		$this->allowed_languages = Kohana::$config->load('cl4.languages');
 		if ( ! empty($this->allowed_languages) && count($this->allowed_languages) > 1) {
 			$language_selection = TRUE;
 			try {
@@ -194,7 +195,7 @@ class Controller_CL4_Base extends Controller_Template {
 	public function action_404() {
 		$this->template->page_name = '404';
 		$this->template->page_title = 'Page not found';
-		$this->template->body_html = Base::get_view('cl4/404', $this->template_parameters);
+		$this->template->body_html = CL4::get_view('cl4/404', $this->template_parameters);
 	}
 
 	/**

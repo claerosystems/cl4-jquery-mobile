@@ -6,5 +6,9 @@ return array(
 		'account' => TRUE,
 		'cl4admin' => TRUE,
 		'model_create' => TRUE,
+		'public' => TRUE,
+		'private' => TRUE,
+		'ajax' => TRUE,
 	),
+	'languages' => array('en-ca', 'fr-ca'),
 );

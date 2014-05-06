@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 $routes = Kohana::$config->load('cl4.routes');
+$lang_options = '(' . implode(',', Kohana::$config->load('cl4.languages')) . ')';
 
 if ($routes['login']) {
 	// login page
@@ -48,4 +49,42 @@ if ($routes['model_create']) {
 		'action' => 'index',
 		'model' => NULL,
 	));
+}
+
+if ($routes['ajax']) {
+	Route::set('ajax', '(<lang>/)ajax/<action>(/<id>)', array(
+		'lang' => $lang_options,
+		'action' => '(check_login|set_smart_parameter|get_smart_parameter)'
+	))->defaults(array(
+			'controller' => 'ajax',
+			'lang' => DEFAULT_LANG,
+			'action' => 'index',
+			'id' => NULL,
+		));
+}
+
+if ($routes['public']) {
+	// routes for public pages
+	Route::set('public', '(<lang>/)(<page>(/<action>(/<id>)))', array(
+		'lang' => $lang_options,
+		'page' => '(home|contact|privacy|404)',
+		'action' => '(view)'
+	))->defaults(array(
+			'controller' => 'Public',
+			'lang' => DEFAULT_LANG,
+			'action' => 'view',
+			'page' => 'home',
+		));
+}
+
+if ($routes['private']) {
+	// routes for public pages
+	Route::set('private', '(<lang>/)<controller>(/<action>(/<id>))', array(
+		'lang' => $lang_options,
+		'controller' => '(dashboard)',
+	))->defaults(array(
+			'controller' => 'dashboard',
+			'lang' => DEFAULT_LANG,
+			'action' => 'index',
+		));
 }

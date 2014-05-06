@@ -218,12 +218,12 @@ class Controller_CL4_Login extends Controller_Base {
 
 		if ( ! $user || ($max_lifetime > 0 && Auth::instance()->timed_out($max_lifetime))) {
 			// user is not logged in at all or they have reached the maximum amount of time we allow sometime to stay logged in, so redirect them to the login page
-			$this->redirect(Base::get_url('login', array('action' => 'logout')) . $this->get_redirect_query());
+			$this->redirect(CL4::get_url('login', array('action' => 'logout')) . $this->get_redirect_query());
 		}
 
 		$timeout_post = Session::instance()->get(Kohana::$config->load('cl4login.timeout_post_session_key'));
 		if (Kohana::$config->load('cl4login.enable_timeout_post') && ! empty($timeout_post)) {
-			$redirect = Base::get_url('login', array('action' => 'timeoutpost'));
+			$redirect = CL4::get_url('login', array('action' => 'timeoutpost'));
 		} else {
 			// need to decode the redirect as it will be encoded in the URL
 			$redirect = CL4::get_param('redirect');
@@ -343,7 +343,7 @@ class Controller_CL4_Login extends Controller_Base {
 				}
 			} // if post
 
-			$this->ajax_result['html'] = Base::get_theme_view('block/forgot', array(
+			$this->ajax_result['html'] = CL4::get_theme_view('block/forgot', array(
 					'company' => $this->company->name,
 					'username' => $saved_username)
 			);
@@ -352,7 +352,7 @@ class Controller_CL4_Login extends Controller_Base {
 			Message::add(__(Kohana::message('login', 'reset_error')), Message::$error);
 		}
 
-		Base::send_ajax($this->ajax_result);
+		CL4::send_ajax($this->ajax_result);
 	} // function
 
 	/**
