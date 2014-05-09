@@ -7,7 +7,8 @@ $totalTime = ($finishLoadTime - PAGE_START);
 ?>
 
 <div data-role="footer" data-theme="a" class="stats">
-	Copyright 2003-<?php echo date('Y'); ?> Tucker Energy Services - All Rights Reserved
+	Copyright <?php echo date('Y'); ?> Claero Systems - All Rights Reserved
+<?php if (0 && KOHANA_ENVIRONMENT != Kohana::PRODUCTION) { ?>
 	<div data-role="navbar" data-theme="c">
 		<ul class="no_bullet no_indent">
 			<li>Generate Time: <?php echo number_format($totalTime, 2); ?>s</li>
@@ -21,21 +22,22 @@ $totalTime = ($finishLoadTime - PAGE_START);
  <?php */ ?>
 		</ul>
 	</div>
+<?php } ?>
 </div>
 
 <div data-role="footer" data-position="fixed">
 	<div data-role="navbar" data-theme="c">
-		<?php switch($_SERVER['SERVER_NAME']) {
-			case 'secure.tuckerenergy.com':
+		<?php switch(KOHANA_ENVIRONMENT) {
+			case Kohana::PRODUCTION:
 				break;
-			case 'securestage.tuckerenergy.com':
+			case Kohana::DEVELOPMENT:
+				echo '<div class="development_msg">This Site is Currently Under Development</div>';
+				break;
+			case Kohana::STAGING:
 				echo '<div class="development_msg">Staging Site - for testing purposes only</div>';
 				break;
-			case 'securedev.tuckerenergy.com':
-				echo '<div class="development_msg">This Site is Currently Under Development</div>';
-				break;
-			case 'securelocal.tuckerenergy.com':
-				echo '<div class="development_msg">This Site is Currently Under Development</div>';
+			case Kohana::TESTING:
+				echo '<div class="development_msg">Testing Site - for testing purposes only</div>';
 				break;
 		} ?>
 	</div>
