@@ -26,7 +26,7 @@
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 	<?php if (1 || DEVELOPMENT_FLAG) { ?>
 		<link rel="stylesheet" href="/cl4/css/vendor/jquery.mobile-1.4.2.css">
-		<link rel="stylesheet" href="/cl4/css/vendor/font-awesome.css">
+		<link rel="stylesheet" href="/cl4/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/cl4/css/cl4.css">
 		<link rel="stylesheet" href="/cl4/css/base.css">
 	<?php } else { ?>
