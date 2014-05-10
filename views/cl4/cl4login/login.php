@@ -52,8 +52,8 @@
 	<?php //echo Form::submit(NULL, 'Login', array('class' => 'login_button', 'data-icon' => 'arrow-r', 'data-iconpos' => 'right', 'data-inline' => 'true', 'data-theme' => 'c')); ?>
 	<?php echo Form::close(); ?>
 
-	<p>If you need assistance to log in, please call 1-403-990-5647 or 1-888-444-0020</p>
-	<p>You may request an account if your company is already set up in the data portal.</p>
+	<p>If you need assistance to log in, please call 1-403-242-2667 or 1-888-555-xxxx.</p>
+	<p>You may request an account using the link below.</p>
 	<?php echo HTML::anchor(Base::get_url('login', array('action' => 'register')), 'Register for an Account', array(
 		'data-inline' => 'true',
 		'data-role' => 'button',
