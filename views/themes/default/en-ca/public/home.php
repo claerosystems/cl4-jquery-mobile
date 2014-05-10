@@ -9,12 +9,13 @@
 </ul>
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
+<?php /* ?>
+
 <div class="ui-bar ui-bar-a">This is a bar formatted with theme A</div>
 <div class="ui-bar ui-bar-b">This is a bar formatted with theme B</div>
 <div class="ui-bar ui-bar-c">This is a bar formatted with theme C</div>
 <div class="ui-bar ui-bar-d">This is a bar formatted with theme D</div>
 <div class="ui-bar ui-bar-e">This is a bar formatted with theme E</div>
-
 <h2>Jquery Mobile List Views</h2>
 <ul data-role="listview" data-autodividers="true" data-filter="true" data-inset="true">
 	<li><a href="index.html">Adam Kinkaid</a></li>
@@ -173,3 +174,4 @@
 		<option value="overnight">Overnight</option>
 	</select>
 </div>
+ <?php */ ?>

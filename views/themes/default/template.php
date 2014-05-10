@@ -57,15 +57,33 @@
 <![endif]-->
 
 <!- PAGE START ***************************************************************************************->
-<div data-role="page" id="page_<?php echo $page_name; ?>">
+<div data-role="page" id="page_<?php echo $page_name; ?>" class="ui-responsive-panel">
 	<?php if ($logged_in) echo CL4::get_view('admin'); // include admin panel ?>
 
 	<?php if ( ! empty($panel_html)) echo $panel_html; ?>
 
+	<div data-role="panel" id="mainmenu" data-position="left" data-position-fixed="true" data-dismissible="false">
+		<a title="<?php echo URL_ROOT; ?>" data-ajax="false" href="/"><img width="240" src="http://claero.com/wp-content/uploads/2012/10/claero_logo_and_text-300x511.png"></a>
+		<p><?php echo date('F d, Y'); ?></p>
+<?php if ( ! empty($user) && $user->loaded()) { ?>
+		<p>Welcome <a data-ajax="false" href="<?php echo Base::get_url('private', array('controller' => 'account')); ?>"><?php echo $user->name(); ?></a></p>
+<?php } ?>
+		<div class="clearfix"></div>
+		<ul data-role="listview" class="ui-listview">
+			<li><?php echo HTML::anchor(Base::get_url('public', array('page' => 'home')), '<i class="fa fa-home"></i> ' . __('Home'), array('class' => ($body_class == 'Data') ? 'ui-btn-active ui-state-persist' : '')) ?></li>
+			<li><?php echo HTML::anchor(Base::get_url('public', array('page' => 'contact')), '<i class="fa fa-phone"></i> ' . __('Contact'), array('class' => ($body_class == 'Data') ? 'ui-btn-active ui-state-persist' : '')) ?></li>
+			<?php if ($logged_in) { ?>
+				<li><?php echo HTML::anchor(Base::get_url('login', array('action' => 'logout')), '<i class="fa fa-unlock"></i> ' . __('Logout'), array('class' => ($body_class == 'Login') ? 'ui-btn-active ui-state-persist' : '')) ?></li>
+			<?php } else { ?>
+				<li><?php echo HTML::anchor(Base::get_url('login', array('action' => 'login')), '<i class="fa fa-lock"></i> ' . __('Login'), array('class' => ($body_class == 'Login') ? 'ui-btn-active ui-state-persist' : '')) ?></li>
+			<?php } ?>
+		</ul>
+	</div><!-- /panel -->
+
 	<?php echo (empty($header_html)) ? View::factory('themes/' . APP_THEME . '/template_header')->set($kohana_view_data) : $header_html; ?>
 
 	<!- CONTENT START ***************************************************************************************->
-	<div data-role="content">
+	<div class="jqm-content" data-role="content">
 
 		<?php //echo Debug::vars($_POST, $_FILES); ?>
 
