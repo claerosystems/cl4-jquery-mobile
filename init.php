@@ -63,6 +63,18 @@ if ($routes['ajax']) {
 		));
 }
 
+if ($routes['private']) {
+	// routes for public pages
+	Route::set('private', '(<lang>/)<controller>(/<action>(/<id>))', array(
+		'lang' => $lang_options,
+		'controller' => '(dashboard)',
+	))->defaults(array(
+			'controller' => 'dashboard',
+			'lang' => DEFAULT_LANG,
+			'action' => 'index',
+		));
+}
+
 if ($routes['public']) {
 	// routes for public pages
 	Route::set('public', '(<lang>/)(<page>(/<action>(/<id>)))', array(
@@ -74,17 +86,5 @@ if ($routes['public']) {
 			'lang' => DEFAULT_LANG,
 			'action' => 'view',
 			'page' => 'home',
-		));
-}
-
-if ($routes['private']) {
-	// routes for public pages
-	Route::set('private', '(<lang>/)<controller>(/<action>(/<id>))', array(
-		'lang' => $lang_options,
-		'controller' => '(dashboard)',
-	))->defaults(array(
-			'controller' => 'dashboard',
-			'lang' => DEFAULT_LANG,
-			'action' => 'index',
 		));
 }
