@@ -3,23 +3,23 @@
 echo "-- submodule init & update" &&
 git submodule init && git submodule update &&
 echo "-- module > Kohana Auth" &&
-cd modules/auth &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd modules/auth && git checkout 3.3/master && git pull && git checkout v3.3.2 &&
 echo "-- module > Kohana Cache" &&
-cd ../cache &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../cache &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo "-- module > Kohana Codebench" &&
-cd ../codebench && git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../codebench && git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana Database" &&
-cd ../database &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../database &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana Image" &&
-cd ../image &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../image &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana Minion" &&
 cd ../minion &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana ORM" &&
-cd ../orm &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../orm &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana Unit Test" &&
-cd ../unittest &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../unittest &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > Kohana Userguide" &&
-cd ../userguide &&git checkout3.1/master && git pull && git checkout v3.3.0 &&
+cd ../userguide &&git checkout3.3/master && git pull && git checkout v3.3.0 &&
 echo"-- module > cl4" &&
 cd ../cl4 && git checkout master && git pull && git checkout kohana_v3.3/master &&
 echo"-- module > cl4-jquery-mobile" &&
