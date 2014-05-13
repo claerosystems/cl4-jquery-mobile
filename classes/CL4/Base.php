@@ -411,6 +411,11 @@ class CL4_Base {
 		}
 	}
 
+	public static function send_ajax($data) {
+		echo json_encode($data);
+		exit;
+	}
+
 	/**
 	 * Send an email.
 	 *
@@ -427,7 +432,7 @@ class CL4_Base {
 	 * @throws Mandrill_Error
 	 */
 	public static function send_email($to_email, $to_name, $subject, $html_content, $options = array()) {
-		require_once(ABS_ROOT . '/application/vendor/mandrill/src/Mandrill.php');
+		require_once(ABS_ROOT . '/modules/cl4-jquery-mobile/vendor/mandrill/src/Mandrill.php');
 
 		try {
 			$mandrill = new Mandrill(MANDRILL_API_KEY);
@@ -514,6 +519,7 @@ class CL4_Base {
 
 			if ( ! empty($result[0]['status']) && $result[0]['status'] == 'sent') {
 				Message::add('Email with subject ' . $subject . ' sent from ' . $from_email . ' to ' . $to_email, Message::$debug);
+				return TRUE;
 			} else {
 				Base::message('base', 'email_error', array('%subject%' => $subject, '%from%' => $from_email, '%to' => $to_email), Message::$error);
 			}
@@ -533,10 +539,9 @@ class CL4_Base {
 			*/
 		} catch(Mandrill_Error $e) {
 			// Mandrill errors are thrown as exceptions
-			echo 'A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage();
-			// A mandrill error occurred: Mandrill_Unknown_Subaccount - No subaccount exists with the id 'customer-123'
-			throw $e;
+			Message::add('A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage(), Message::$error);
 		}
+		return FALSE;
 	}
 
 	/**

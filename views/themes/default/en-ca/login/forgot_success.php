@@ -1,0 +1,1 @@
+<p>A link has been sent to your email address with information to reset your password.</p>

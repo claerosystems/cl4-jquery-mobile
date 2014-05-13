@@ -82,18 +82,13 @@ class Controller_CL4_Base extends Controller_Template {
 			$this->auto_render = FALSE;
 		}
 
-		// if the site is unavailable, redirect the user to the unavailable page
-		if (defined('UNAVAILABLE_FLAG') && UNAVAILABLE_FLAG) {
-			throw HTTP_Exception(503, __('The site is currently unavailable.'));
-		}
-
 		parent::before();
 
 		// initialize the locale if there are allowed languages
 		$this->allowed_languages = Kohana::$config->load('cl4.languages');
-		if ( ! empty($this->allowed_languages) && count($this->allowed_languages) > 1) {
+		if ( ! empty($this->allowed_languages) && count($this->allowed_languages) > 0) {
 			$language_selection = TRUE;
-			try {
+			//try {
 				// use the locale parameter from the route, if not set, then the cookie, if not set, then use the first locale in the list
 				$this->locale = Request::current()->param('locale', Cookie::get('language', $this->allowed_languages[0]));
 				// make sure the locale is valid
@@ -102,32 +97,39 @@ class Controller_CL4_Base extends Controller_Template {
 				i18n::lang($this->locale);
 				// try to remember the locale in a cookie
 				Cookie::set('language', $this->locale, Date::MONTH);
-			} catch (Exception $e) {
+			//} catch (Exception $e) {
 				// failed to set and/or store the locale
-			}
+			//}
 			$this->language = substr(i18n::lang(), 0, 2);
+
+			//echo Debug::vars($this->request);exit;
 
 			// create the language switch link and set the locale
 			if ($this->locale == 'fr-ca') {
 				// french, set the date
 				setlocale(LC_TIME, 'fr_CA.utf8');
-				// create the switch lanuage link
-				$language_switch_link = '<a href="/' . $this->request->route()->uri(array('lang' => 'en-ca')) . '">EN</a> / FR';
+				// create the switch language link
+				$language_switch_link = '<a href="/' . Base::get_url('public', array('lang' => 'en-ca')) . '">EN</a> / FR';
 				$date_input_options = "            format: 'dddd dd, mmmm yyyy'" . EOL;
 			} else {
 				// english, set the date
 				setlocale(LC_TIME, 'en_CA.utf8');
-				// create the switch lanuage link
-				$language_switch_link = 'EN / <a href="/' . $this->request->route()->uri(array('lang' => 'fr-ca')) . '">FR</a>';
+				// create the switch language link
+				$language_switch_link = 'EN / <a href="/' . Base::get_url('public', array('lang' => 'fr-ca')) . '">FR</a>';
 				$date_input_options = "            lang: 'fr', " . EOL; // defined in master js file, must execute before this does
 				$date_input_options .= "            format: 'dddd mmmm dd, yyyy'" . EOL;
 			} // if
 
 		} else {
-			// there are no or 1 language so no language selection
+			// there are no language selection
 			setlocale(LC_TIME, 'en_CA.utf8');
 			i18n::lang('en-ca');
 			$language_selection = FALSE;
+		}
+
+		// if the site is unavailable, redirect the user to the unavailable page
+		if (defined('UNAVAILABLE_FLAG') && UNAVAILABLE_FLAG) {
+			throw HTTP_Exception_503::factory(503, __('The site is currently unavailable.'));
 		}
 
 		$this->check_login();
@@ -193,9 +195,7 @@ class Controller_CL4_Base extends Controller_Template {
 	} // function before
 
 	public function action_404() {
-		$this->template->page_name = '404';
-		$this->template->page_title = 'Page not found';
-		$this->template->body_html = CL4::get_view('cl4/404', $this->template_parameters);
+		throw HTTP_Exception::factory(404, __('The page you requested was not found.'));
 	}
 
 	/**
@@ -247,6 +247,7 @@ class Controller_CL4_Base extends Controller_Template {
 	public function check_login() {
 		// ***** Authentication *****
 		// check to see if they are allowed to access the action
+
 		if ( ! Auth::instance()->controller_allowed($this, $this->request->action())) {
 			$is_ajax = (bool) Arr::get($_REQUEST, 'c_ajax', FALSE);
 
@@ -259,7 +260,7 @@ class Controller_CL4_Base extends Controller_Template {
 					));
 					exit;
 				} else {
-					$this->redirect(Route::get('login')->uri(array('action' => 'noaccess')) . $this->get_login_redirect_query());
+					$this->redirect(Base::get_url('login', array('action' => 'noaccess')) . $this->get_login_redirect_query());
 				}
 			} else {
 				if (Auth::instance()->timed_out()) {
@@ -273,7 +274,7 @@ class Controller_CL4_Base extends Controller_Template {
 						$this->process_timeout();
 
 						// display password page because the sesion has timeout
-						$this->redirect(Route::get('login')->uri(array('action' => 'timedout')) . $this->get_login_redirect_query());
+						$this->redirect(Base::get_url('login', array('action' => 'timedout')) . $this->get_login_redirect_query());
 					}
 				} else {
 					if ($is_ajax) {
@@ -284,10 +285,12 @@ class Controller_CL4_Base extends Controller_Template {
 						exit;
 					} else {
 						// just not logged in, so redirect them to the login with a redirect parameter back to the current page
-						$this->redirect(Route::get('login')->uri() . $this->get_login_redirect_query());
+						$this->redirect(Base::get_url('login') . $this->get_login_redirect_query());
 					}
 				}
+				echo Debug::vars('here3');exit;
 			} // if
+			echo Debug::vars('here4');exit;
 		} // if
 
 		if (Auth::instance()->logged_in() && $this->auto_render) {

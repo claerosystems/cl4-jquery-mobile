@@ -58,7 +58,7 @@
 
 <!- PAGE START ***************************************************************************************->
 <div data-role="page" id="page_<?php echo $page_name; ?>" class="ui-responsive-panel">
-	<?php if ($logged_in) echo CL4::get_view('admin'); // include admin panel ?>
+	<?php //if ($logged_in) echo Base::get_view('admin'); // include admin panel ?>
 
 	<?php if ( ! empty($panel_html)) echo $panel_html; ?>
 

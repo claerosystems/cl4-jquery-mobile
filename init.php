@@ -64,7 +64,7 @@ if ($routes['ajax']) {
 }
 
 if ($routes['private']) {
-	// routes for public pages
+	// routes for private pages
 	Route::set('private', '(<lang>/)<controller>(/<action>(/<id>))', array(
 		'lang' => $lang_options,
 		'controller' => '(dashboard)',
