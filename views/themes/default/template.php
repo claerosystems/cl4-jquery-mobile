@@ -32,6 +32,9 @@
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
 	<?php } ?>
+	<?php if ( ! empty($custom_css)) { ?>
+		<?php foreach ($custom_css as $css)  echo EOL . TAB . TAB . '<link rel="stylesheet" href="' . $css . '">'; ?>
+	<?php  } ?>
 
 	<?php //<link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'> ?>
 
@@ -43,7 +46,12 @@
 		<script src="/cl4/js/base.js"></script>
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
+		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+		<!--<script src="//code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
 	<?php } ?>
+	<?php if ( ! empty($custom_js)) { ?>
+		<?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '">'; ?>
+	<?php  } ?>
 
 	<?php if (0) echo '<script src="/cl4/js/model_create.js"></script>'; ?>
 

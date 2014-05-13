@@ -227,6 +227,7 @@ class Controller_CL4_Base extends Controller_Template {
 		} // if
 
 		parent::after();
+
 		if ($this->auto_render === TRUE) {
 			//$this->response->check_cache( null, $this->request );
 
