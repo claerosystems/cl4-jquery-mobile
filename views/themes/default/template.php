@@ -50,13 +50,12 @@
 		<!--<script src="//code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
 	<?php } ?>
 	<?php if ( ! empty($custom_js)) { ?>
-		<?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '">'; ?>
+		<?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '"></script>'; ?>
 	<?php  } ?>
 
 	<?php if (0) echo '<script src="/cl4/js/model_create.js"></script>'; ?>
 
 	<script>var cl4_in_debug = <?php echo (int) DEBUG_FLAG; ?>;</script>
-
 </head>
 <body class="<?php echo HTML::chars(trim($body_class)); ?>">
 <a name="wc_top"></a>

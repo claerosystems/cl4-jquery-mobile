@@ -18,7 +18,8 @@ class Controller_CL4_Account extends Controller_Private {
 	* If the user is not logged in, this will then redirect to the login page
 	*/
 	public function action_index() {
-		$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+		//$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+		$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 	} // function
 
 	/**
@@ -27,7 +28,8 @@ class Controller_CL4_Account extends Controller_Private {
 	public function action_cancel() {
 		Message::add('Your last action was cancelled.', Message::$notice);
 
-		$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+		//$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+		$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 	}
 
 	/**
@@ -35,7 +37,7 @@ class Controller_CL4_Account extends Controller_Private {
 	*/
 	public function action_profile() {
 		// set the template title (see Controller_Base for implementation)
-		$this->template->page_title = 'Profile Edit - ' . $this->page_title_append;
+		$this->template->page_title = 'Profile Edit';
 
 		// get the current user from auth
 		$user = Auth::instance()->get_user();
@@ -57,7 +59,8 @@ class Controller_CL4_Account extends Controller_Private {
 				Auth::instance()->get_user()->reload();
 
 				// redirect because they have changed their name, which is displayed on the page
-				$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+				//$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+				$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 
 			} catch (ORM_Validation_Exception $e) {
 				Message::message('account', 'profile_save_validation', array(
@@ -77,7 +80,7 @@ class Controller_CL4_Account extends Controller_Private {
 		// prepare the view & form
 		$this->template->body_html = View::factory('cl4/cl4account/profile')
 			->set('edit_fields', $model->get_form(array(
-				'form_action' => URL::site(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile'))),
+				'form_action' => Base::get_url(Route::name($this->request->route()), array('action' => 'profile')),
 				'form_id' => 'editprofile',
 			)));
 	} // function action_profile
@@ -86,7 +89,7 @@ class Controller_CL4_Account extends Controller_Private {
 	* Saves the updated password and then calls action_profile() to generate form
 	*/
 	public function action_password() {
-		$this->template->page_title = 'Change Password - ' . $this->page_title_append;
+		$this->template->page_title = 'Change Password';
 
 		// get the current user from auth
 		$user = Auth::instance()->get_user();
@@ -139,7 +142,8 @@ class Controller_CL4_Account extends Controller_Private {
 				Auth::instance()->get_user()->reload();
 
 				// redirect and exit
-				$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+				//$this->redirect(Route::get(Route::name($this->request->route()))->uri(array('action' => 'profile')));
+				$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 
 			} else {
 				Message::add(__(Kohana::message('account', 'password_change_validation')) . Message::add_validation_errors($validation, 'account'), Message::$error);

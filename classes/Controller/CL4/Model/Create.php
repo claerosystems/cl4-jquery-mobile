@@ -20,17 +20,7 @@ class Controller_CL4_Model_Create extends Controller_Private {
 	 */
 	public function before() {
 		parent::before();
-	} // function before
-
-	/**
-	* Adds the CSS for cl4admin
-	*/
-	protected function add_css() {
-		if ($this->auto_render) {
-			$this->add_style('dbadmin', 'css/dbadmin.css')
-				->add_script('model_create', 'cl4/js/model_create.js');
-		}
-	} // function add_css
+	}
 
 	/**
 	 * Generates the page with a table list, some JS and a textarea for the generated PHP for a model
@@ -43,6 +33,10 @@ class Controller_CL4_Model_Create extends Controller_Private {
 
 		$db_list = array_keys((array) Kohana::$config->load('database'));
 		$db_list = array_combine($db_list, $db_list);
+
+		$this->template->custom_js = array(
+			'/cl4/js/model_create.js',
+		);
 
 		$this->template->body_html = View::factory('cl4/model_create/index')
 			->set('table_name', CL4::get_param('table_name'))
