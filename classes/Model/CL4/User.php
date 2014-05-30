@@ -143,7 +143,7 @@ class Model_CL4_User extends Model_Auth_User {
 		),
 		'force_update_password_flag' => array(
 			'field_type'     => 'Checkbox',
-			'list_flag'      => TRUE,
+			'list_flag'      => FALSE,
 			'edit_flag'      => TRUE,
 			'search_flag'    => FALSE,
 			'view_flag'      => TRUE,
@@ -151,7 +151,7 @@ class Model_CL4_User extends Model_Auth_User {
 		),
 		'force_update_profile_flag' => array(
 			'field_type'     => 'Checkbox',
-			'list_flag'      => TRUE,
+			'list_flag'      => FALSE,
 			'edit_flag'      => TRUE,
 			'search_flag'    => FALSE,
 			'view_flag'      => TRUE,
