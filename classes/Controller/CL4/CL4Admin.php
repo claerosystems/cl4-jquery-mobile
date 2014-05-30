@@ -75,11 +75,11 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			// if there is no new model to go to, redirect them to the no access page
 			if (empty($go_to_model)) {
 				$this->set_session();
-				$this->redirect('login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
+				$this->redirect('/login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
 			}
 
 			$this->set_session();
-			$this->redirect('dbadmin/' . $go_to_model . '/index');
+			$this->redirect(Base::get_url('cl4admin', array('action' => 'index', 'model' => $go_to_model))); //'/dbadmin/' . $go_to_model . '/index');
 		} // if
 
 		// check to see the user has permission to access this action
@@ -95,10 +95,10 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			} else if ($this->model_name != $default_model && ! empty($default_model)) {
 				Message::message('cl4admin', 'no_permission_item', NULL, Message::$error);
 				$this->set_session();
-				$this->redirect('dbadmin/' . $default_model . '/index');
+				$this->redirect('/dbadmin/' . $default_model . '/index');
 			} else {
 				$this->set_session();
-				$this->redirect('login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
+				$this->redirect('/login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
 			}
 		} // if
 
@@ -106,7 +106,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		if ( ! isset($model_list[$this->model_name]) && ! CL4::is_dev()) {
 			Message::message('cl4admin', 'model_not_defined', array(':model_name' => $this->model_name), Message::$debug);
 			$this->set_session();
-			$this->redirect('dbadmin/' . $default_model . '/index');
+			$this->redirect('/dbadmin/' . $default_model . '/index');
 		}
 
 		$this->model_session = Session::instance()->path($this->session_key . '.' . $this->model_name);
@@ -266,7 +266,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		);
 		$options = Arr::merge($options, $override_options);
 
-		try {
+		//try {
 			$orm_multiple = new MultiORM($this->model_name, $options);
 
 			// there is a search so apply it
@@ -275,10 +275,10 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			}
 
 			$view_content .= $orm_multiple->get_editable_list($options);
-		} catch (Exception $e) {
-			Kohana_Exception::handler_continue($e);
-			$view_content .= Kohana::message('cl4admin', 'problem_preparing');
-		}
+		//} catch (Exception $e) {
+		//	Kohana_Exception::handler_continue($e);
+		//	$view_content .= Kohana::message('cl4admin', 'problem_preparing');
+		//}
 
 		$this->add_admin_view('', $view_content);
 	} // function display_editable_list
