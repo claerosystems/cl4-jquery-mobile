@@ -26,6 +26,7 @@
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 	<?php if (1 || DEVELOPMENT_FLAG) { ?>
 		<link rel="stylesheet" href="/cl4/css/vendor/jquery.mobile-1.4.2.css">
+		<link rel="stylesheet" href="/cl4/css/vendor/jquery.mobile.datepicker.css">
 		<link rel="stylesheet" href="/cl4/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/cl4/css/cl4.css">
 		<link rel="stylesheet" href="/cl4/css/base.css">
@@ -43,6 +44,9 @@
 		<!--<script src="//code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
 		<script src="/cl4/js/vendor/jquery-2.1.0.min.js"></script>
 		<script src="/cl4/js/vendor/jquery.mobile-1.4.2.js"></script>
+		<script src="/cl4/js/vendor/datepicker.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
+		<?php /* <script src="/cl4/js/vendor/jquery.currency.js"></script> */ ?>
 		<script src="/cl4/js/base.js"></script>
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
@@ -119,14 +123,13 @@
 
 <?php } ?>
 
-<?php // Javascript to run once the page is loaded
-if ( ! empty($on_load_js)) { ?>
-	<script>
-		$(function() {
-			<?php echo $on_load_js . EOL; ?>
-		});
-	</script>
-<?php } ?>
+<script>
+	$(function() {
+		<?php echo ( ! empty($on_load_js)) ? $on_load_js . EOL : ''; ?>
+
+		//$('.cl4_money').currency();
+	});
+</script>
 
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <?php if (ANALYTICS_ID != NULL) { ?>

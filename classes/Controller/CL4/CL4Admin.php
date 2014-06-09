@@ -39,6 +39,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		parent::before();
 
+		if ($this->auto_render) $this->template->page_name = 'cl4admin';
+
 		// set up the default database group
 		$this->db_group = Kohana::$config->load('cl4admin.db_group');
 
@@ -125,6 +127,9 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		if ($sort_column !== NULL) $this->model_session['sort_by_column'] = $sort_column;
 		if ($sort_order !== NULL) $this->model_session['sort_by_order'] = $sort_order;
 
+		// set the body class
+		$this->page .= '_' . $this->model_name;
+
 		// set the values in object from the values in the session
 		$this->set_controller_properties();
 
@@ -134,12 +139,11 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function before
 
 	/**
-	* Adds the CSS for cl4admin
+	 * Deprecated: does nothing.
+	 * Adds the CSS for cl4admin
 	*/
 	protected function add_css() {
-		if ($this->auto_render) {
-			//$this->add_style('dbadmin', 'css/dbadmin.css');
-		}
+
 	} // function add_css
 
 	/**
@@ -241,14 +245,23 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		// set up the admin options
 		$options = array(
+			'get_form_view_file' => i18n::lang() . '/form/orm_form_mobile',
 			'mode' => 'view',
 			'sort_by_column' => $this->sort_column,
 			'sort_by_order' => $this->sort_order,
 			'page_offset' => $this->page_offset,
 			'in_search' => ( ! empty($this->search) || ! empty($this->sort_column)),
+			'page_max_rows' => 50,
 			'editable_list_options' => array(
+				'table_options_multiorm' => array(
+					'table_attributes' => array(
+						'class' => 'cl4_content ui-responsive table-stroke',
+						'data-role' => "table",
+						'data-mode' =>"reflow",
+					),
+				),
 				'per_row_links' => array(
-					'view' => TRUE,     // view button
+					'view' => FALSE,     // view button
 					'edit' => $this->check_perm('edit'),     // edit button
 					'delete' => $this->check_perm('delete'),   // delete button
 					'add' => $this->check_perm('add'),      // add (duplicate) button
@@ -256,12 +269,15 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 				),
 				'top_bar_buttons' => array(
 					'add' => $this->check_perm('add'),             // add (add new) button
-					'add_multiple' => $this->check_perm('add'),    // add multiple button
-					'edit' => $this->check_perm('edit'),            // edit (edit selected) button
+					'add_multiple' => FALSE, //$this->check_perm('add'),    // add multiple button
+					'edit' => FALSE, //$this->check_perm('edit'),            // edit (edit selected) button
 					'export_selected' => $this->check_perm('export'), // export selected button
 					'export_all' => $this->check_perm('export'),      // export all button
 					'search' => $this->check_perm('search'),          // search button
 				),
+				'top_bar_buttons_custom' => array(
+
+				)
 			),
 		);
 		$options = Arr::merge($options, $override_options);
@@ -290,7 +306,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	* @param  string  $content  The content to put in the content container in the view
 	*/
 	protected function add_admin_view($title, $content) {
-		$this->template->body_html .= View::factory('cl4/cl4admin/admin')
+		$this->template->body_html .= Base::get_view('admin')
 			->bind('title', $title)
 			->bind('content', $content);
 	} // function add_admin_view
@@ -606,7 +622,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 			// redirect to the index page so the nav will work properly
 			$this->redirect_to_index();
-
 		} else {
 			$this->set_page_title('Search');
 			$view_title = $this->get_page_title_message('search');
@@ -615,7 +630,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			));
 			$this->add_admin_view($view_title, $view_content);
 		}
-	} // function
+	}
 
 	/**
 	* Clears the search from the session and redirects the user to the index page for the model
@@ -714,7 +729,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	 * @return void
 	 */
 	protected function set_page_title($action = NULL) {
-		$this->template->page_title = ( ! empty($action) ? $action . ' - ' : '') . $this->model_display_name . ' - Administration - ' . $this->page_title_append;
+		$this->template->page_name = strtolower($action) . '-' . strtolower($this->model_name);
+		$this->template->page_title = ( ! empty($action) ? $action . ' - ' : '') . $this->model_display_name . ' - Administration';
 	}
 
 	/**
@@ -722,6 +738,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	*/
 	function redirect_to_index() {
 		$this->set_session();
-		$this->redirect('/' . Route::get(Route::name($this->request->route()))->uri(array('model' => $this->model_name, 'action' => 'index')));
-	} // function
-} // class
+		//$this->redirect('/' . Route::get(Route::name($this->request->route()))->uri(array('model' => $this->model_name, 'action' => 'index')));
+		$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
+	}
+}

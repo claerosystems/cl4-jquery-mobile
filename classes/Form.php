@@ -1,6 +1,52 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * Class Form extended for jquery mobile
+ */
 class Form extends CL4_Form {
+	/**
+	 * Pass an empty (string), FALSE (bool), 0000-00-00 (string), 0000-00-00 00:00:00 (string) or an invalid date to get a blank field.
+	 *
+	 * @param string $name
+	 * @param string $value
+	 * @param array $attributes
+	 * @param array $options
+	 */
+	public static function date($name, $value = FALSE, array $attributes = NULL, array $options = array()) {
+		$html = '';
+
+		$default_options = array(
+			'clean_date' => FALSE,
+			'default_current_date' => FALSE,
+		);
+		$options += $default_options;
+
+		if ($attributes === NULL) $attributes = array();
+		$attributes += array(
+			//'size' => 10,
+			//'maxlength' => 10,
+			'data-role' => 'date',
+		);
+
+		//$attributes = HTML::set_class_attribute($attributes, 'js_cl4_date_field-date');
+
+		// check if the value of the date is actually empty
+		if (Form::check_date_empty_value($value)) {
+			if ($options['default_current_date']) {
+				$value = date(Form::DATE_FORMAT);
+			} else {
+				$value = '';
+			}
+		} else if ($options['clean_date']) {
+			$unix = strtotime($value);
+			$value = date(Form::DATE_FORMAT, $unix);
+		}
+
+		$html .= Form::input($name, $value, $attributes);
+
+		return $html;
+	}
+
 	/**
 	 * Creates a set of input fields to capture a structured phone number.
 	 * The database field needs to be 32 characters long to accommodate the entire phone number
@@ -93,4 +139,97 @@ class Form extends CL4_Form {
 
 		return $html . '</div>';
 	} // function phone
+
+	/**
+	 * Creates radio buttons for a form.
+	 *
+	 * @param string $name       The name of these radio buttons.
+	 * @param array  $source     The source to build the inputs from.
+	 * @param mixed  $selected   The selected input.
+	 * @param array  $attributes Attributes to apply to the radio inputs.
+	 * @param array  $options    Options to modify the creation of our inputs.
+	 *        orientation => the way that radio buttons and checkboxes are laid out, allowed: horizontal, vertical, table, table_vertical (puts text above the <input> separated by a <br />) (default: horizontal)
+	 *        radio_attributes => an array where the keys are the radio values and the values are arrays of attributes to be added to the radios
+	 *
+	 * @return string
+	 */
+	public static function radios($name, $source, $selected = NULL, array $attributes = NULL, array $options = array()) {
+		$html = '';
+
+		$default_options = array(
+			'orientation' => 'horizontal',
+			'view' => NULL,
+			'replace_spaces' => TRUE,
+			'table_tag' => true,
+			'columns' => 2,
+			'escape_label' => TRUE,
+			'source_value' => Form::$default_source_value,
+			'source_label' => Form::$default_source_label,
+			'table_attributes' => array(
+				'class' => 'radio_table',
+			),
+			'radio_attributes' => array(),
+			'label_attributes' => array(),
+		);
+		if (isset($options['table_attributes'])) $options['table_attributes'] += $default_options['table_attributes'];
+		$options += $default_options;
+
+		// if the view is empty, set to radios_[orientation] if the orientation is included in our list of orientations (for security)
+		if (empty($options['view'])) {
+			switch ($options['orientation']) {
+				case 'horizontal' :
+				case 'table' :
+				case 'table_vertical' :
+				case 'vertical' :
+					$view_name = $options['orientation'];
+					break;
+				default :
+					$view_name = 'horizontal';
+					break;
+			} // switch
+			$options['view'] = 'cl4/form/radios_' . $view_name;
+		} // if
+
+		if (empty($attributes['id'])) {
+			// since we have no ID, but we need one for the labels, so just use a unique id
+			$attributes['id'] = uniqid();
+		}
+
+		$fields = array();
+		foreach ($source as $radio_key => $radio_value) {
+			if ($options['escape_label']) {
+				$radio_value = HTML::chars($radio_value);
+			}
+			if ($options['replace_spaces']) {
+				$radio_value = str_replace(' ', '&nbsp;', $radio_value);
+			}
+
+			$checked = ($selected == $radio_key);
+
+			// make an attribute for this radio based on the current id plus the value of the radio
+			$this_attributes = Arr::overwrite($attributes, array('id' => $attributes['id'] . '-' . $radio_key));
+
+			if (isset($options['radio_attributes'][$radio_key])) {
+				$this_attributes = HTML::merge_attributes($this_attributes, $options['radio_attributes'][$radio_key]);
+			}
+
+			$label_attributes = array(
+				'for' => $this_attributes['id'],
+			);
+			if (isset($options['label_attributes'][$radio_key])) {
+				$label_attributes = HTML::merge_attributes($label_attributes, $options['label_attributes'][$radio_key]);
+			}
+
+			$fields[] = array(
+				'radio' => Form::radio($name, $radio_key, $checked, $this_attributes),
+				'label' => $radio_value,
+				'label_tag' => '<label' . HTML::attributes($label_attributes) . '>',
+			);
+		} // foreach
+
+		return View::factory($options['view'], array(
+			'fields' => $fields,
+			'options' => $options,
+		));
+	} // function radios
 }

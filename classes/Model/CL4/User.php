@@ -16,7 +16,7 @@ class Model_CL4_User extends Model_Auth_User {
 		*/
 		'id' => array(
 			'field_type'     => 'Hidden',
-			'list_flag'      => FALSE,
+			'list_flag'      => TRUE,
 			'edit_flag'      => TRUE,
 			'search_flag'    => FALSE,
 			'view_flag'      => FALSE,

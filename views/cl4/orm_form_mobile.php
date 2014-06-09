@@ -1,3 +1,4 @@
+<!-- modules / cl4-jquery-mobile / cl4/orm_form_mobile.php -->
 <div class="responsive_form">
 <?php echo $form_open_tag; ?>
 
@@ -5,10 +6,17 @@
 <?php
 // display the search specfic stuff
 if ($mode == 'search') { ?>
-	<fieldset class="cl4_tools">
-		Search with: <?php echo $search_type_html; ?><br />
-		Search method: <?php echo $like_type_html; ?>
-	</fieldset>
+
+<fieldset data-role="controlgroup" data-type="horizontal">
+	<legend>Search with:</legend>
+	<?php echo $search_type_html; ?>
+</fieldset>
+
+<fieldset data-role="controlgroup" data-type="horizontal">
+	<legend>Search method:</legend>
+ 	<?php echo $like_type_html; ?>
+</fieldset>
+
 <?php } // if
 if ($any_visible) {
 	if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
