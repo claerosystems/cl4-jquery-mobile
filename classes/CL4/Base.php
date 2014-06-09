@@ -57,6 +57,10 @@ class CL4_Base {
 		return $return_string;
 	}
 
+	public static function format_money($amount) {
+		return '$' . number_format($amount, 2);
+	}
+
 	/**
 	 * Prepare and send a PDF document to the browser using WKHTMLTOPDF
 	 *
