@@ -92,7 +92,7 @@ class Controller_CL4_Ajax extends Controller_Base {
 	}
 
 	/**
-	 * set a user or company setting via ajax
+	 * get / set a user or company setting via ajax
 	 */
 	public function action_get_smart_parameter() {
 		$parameter_name = CL4::get_param('parameter_name', NULL);
@@ -101,7 +101,7 @@ class Controller_CL4_Ajax extends Controller_Base {
 		// todo: security check!!!
 		if ( ! empty($parameter_name)) {
 			try {
-				$this->html = CL4::get_smart_parameter($parameter_name, $default, $type);
+				$this->html = Base::get_smart_parameter($parameter_name, $default, $type);
 				$this->status = 1;
 			} catch (exception $e) {
 				$this->html = 'failed to get smart parameter: ' . Kohana_Exception::text($e);
