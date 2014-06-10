@@ -294,11 +294,11 @@ class CL4_Base {
 	 * @param    string      $parameter_name     the name of the parameter
 	 * @param    mixed       $default            (optional) the default value to set/return, uses timeportal conf defaults instead
 	 */
-	public static function get_smart_parameter($parameter_name, $default = NULL) {
+	public static function get_smart_parameter($parameter_name, $default = NULL, $type = NULL) {
 		$session =& Session::instance()->as_array();
 		$source = $session['auth_user'];
 
-		$parameter_value = Base::get_param($parameter_name, NULL);
+		$parameter_value = Base::get_param($parameter_name, $default, $type);
 		if ($parameter_value !== NULL) {
 			// save and return the new setting
 			$source->setting($parameter_name, $parameter_value);
