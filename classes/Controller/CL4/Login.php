@@ -311,6 +311,8 @@ class Controller_CL4_Login extends Controller_Base {
 					}
 					*/
 
+					$user->complete_login();
+
 					// check for redirect and do it
 					if ( ! empty($redirect) && is_string($redirect)) {
 						// Redirect after a successful login, but check permissions first
