@@ -631,6 +631,24 @@ class Controller_CL4_Login extends Controller_Base {
 	}
 
 	/**
+	 * Returns the redirect value as a query string ready to use in a direct
+	 * The ? is added at the beginning of the string
+	 * An empty string is returned if there is no redirect parameter
+	 *
+	 * @return	string
+	 */
+	protected function get_redirect_query() {
+		$redirect = urldecode(CL4::get_param('redirect'));
+
+		if ( ! empty($redirect)) {
+			return URL::array_to_query(array('redirect' => $redirect), '&');
+		} else {
+			return '';
+		}
+	} // function get_redirect_query
+
+
+	/**
 	 * Redirects the user the first page they should see after login
 	 * $redirect contains the page they may have requested before logging in and they should be redirected there
 	 * If $redirect is is NULL then the default redirect from the config will be used
