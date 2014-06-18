@@ -659,7 +659,7 @@ class Controller_CL4_Login extends Controller_Base {
 	protected function login_success_redirect($redirect = NULL) {
 		if ( ! empty($redirect)) {
 			// todo: make sure redirect is valid
-			$redirect_url = Base::get_url($redirect);
+			$redirect_url = URL_ROOT . '/' . $redirect; //Base::get_url($redirect);
 		} else {
 			$redirect_url = Base::get_url('private', array('controller' => 'dashboard'));
 		}
