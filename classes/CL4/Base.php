@@ -8,6 +8,49 @@
  */
 class CL4_Base {
 	/**
+	 * Attempt to convert the given phone number in to the standard cl4 format, which is x-xxx-xxx-xxxx-xx
+	 * @param $phone_number
+	 *
+	 * @return string
+	 */
+	public static function convert_phone_to_cl4($phone_number) {
+		$converted = '';
+
+		// attempt to find the extension
+		$phone_ext_parts = explode('x', $phone_number);
+		if (isset($phone_ext_parts[1])) {
+			$phone_ext = preg_replace("/\D/", "", $phone_ext_parts[1]);
+			$phone_part_1 = preg_replace("/\D/", "-", $phone_ext_parts[0]);
+		} else {
+			$phone_ext = '';
+			$phone_part_1 = preg_replace("/\D/", "-", $phone_number);
+		}
+
+		// replace all the duplicate dashes with a single and remove any trailing dashes
+		$phone_part_1 = trim(str_replace('--', '-', $phone_part_1), '-');
+		$phone_parts = explode('-', $phone_part_1);
+		$phone_part_count = count($phone_parts);
+
+		// we only have 345-3234
+		if ($phone_part_count == 2) {
+			$converted = '--' . $phone_part_1 . '-' . $phone_ext;
+			// we have 323-434-5456
+		} else if ($phone_part_count == 3) {
+			$converted = '-' . $phone_part_1 . '-' . $phone_ext;
+			// we have 1-455-545-6567
+		} else if ($phone_part_count == 4) {
+			$converted = $phone_part_1 . '-' . $phone_ext;
+			// we have 1-432-434-5455-455
+		} else if ($phone_part_count == 5) {
+			$converted = $phone_part_1; // already has the extension in it
+		} else {
+			$converted = $phone_number;
+		}
+
+		return $converted;
+	}
+
+	/**
 	 * copy a file to AWS, all status messages are in Message
 	 *
 	 * @param $source_file_path
