@@ -7,6 +7,9 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	protected $db_group; // the default database config to use, needed for when a specific model is not loaded
 	protected $model_name; // the name of the model currently being manipulated
 	protected $model_display_name; // the fulll, friendly object name as specified in the options or the model itself
+	protected $override_list_options = array();
+	protected $override_orm_options = array();
+
 	/**
 	* @var  ORM  The model we are working with
 	*/
@@ -190,10 +193,12 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	*/
 	protected function load_model($mode = 'view') {
 		try {
-			$orm_options = array(
+			$default_orm_options = array(
 				'mode' => $mode,
 				'db_group' => $this->db_group,
 			);
+
+			$orm_options = Arr::merge($default_orm_options, $this->override_orm_options);
 
 			Message::message('cl4admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
 
@@ -231,7 +236,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		$this->model_display_name = $this->get_model_display_name(ORM::factory($this->model_name));
 		$this->set_page_title();
 
-		$this->display_editable_list();
+		$this->display_editable_list($this->override_list_options);
 	}
 
 	/**
