@@ -2,7 +2,7 @@
 <?php
 
 if ($form_options['display_buttons'] && $form_options['display_buttons_at_top']) {
-	echo '<div class="cl4_buttons cl4_buttons_top">' . implode('', $form_buttons) . '</div>' . EOL;
+	echo '<div data-role="controlgroup" data-type="horizontal" class="cl4_buttons">' . implode('', $form_buttons) . '</div>' . EOL;
 }
 
 if ($any_visible) { ?>
@@ -11,8 +11,8 @@ if ($any_visible) { ?>
 		foreach ($display_order as $column) {
 			if (isset($form_field_html[$column])) { ?>
 				<li data-role="fieldcontain">
-					<?php echo $field_html['label']; ?>
-					<?php echo $field_html['field']; ?>
+					<?php echo $form_field_html[$column]['label']; ?>
+					<?php echo $form_field_html[$column]['field']; ?>
 				</li>
 			<?php 	} // if
 		} // foreach ?>
@@ -24,5 +24,5 @@ if ($any_visible) { ?>
 }
 
 if ($form_options['display_buttons']) {
-	echo '<div class="cl4_buttons">' . implode('', $form_buttons) . '</div>';
+	echo '<div data-role="controlgroup" data-type="horizontal" class="cl4_buttons">' . implode('', $form_buttons) . '</div>';
 }
