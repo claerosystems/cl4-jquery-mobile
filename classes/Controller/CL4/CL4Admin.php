@@ -645,6 +645,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		$this->model_session = Kohana::$config->load('cl4admin.default_list_options');
 		$this->set_controller_properties();
 
+		Message::add('Search and sort criteria has been reset.', Message::$debug);
+
 		$this->redirect_to_index();
 	} // function action_cancel_search
 
@@ -744,6 +746,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	function redirect_to_index() {
 		$this->set_session();
 		//$this->redirect('/' . Route::get(Route::name($this->request->route()))->uri(array('model' => $this->model_name, 'action' => 'index')));
-		$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
+		//$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
+		$this->redirect(Base::get_url(Route::name($this->request->route()), array('prov' => $this->prov, 'model' => $this->model_name, 'action' => 'index')));
 	}
 }
