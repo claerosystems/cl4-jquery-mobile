@@ -21,6 +21,7 @@
 <?php */ ?>
 
 <?php
+$prefix = '';
 foreach ($messages as $message) {
 	if ($level_to_class[$message['level']] == 'error') {
 		$theme = 'e'; // red
@@ -30,8 +31,9 @@ foreach ($messages as $message) {
 		$theme = 'd'; // green
 	} else {
 		$theme = 'a'; // grey
+		$prefix = 'debug: ';
 	}
-	echo '<div class="ui-bar ui-bar-' . $theme . ' ' . $level_to_class[$message['level']] . '">' . $message['message'] . '</div>' . EOL;
+	echo '<div class="ui-bar ui-bar-' . $theme . ' ' . $level_to_class[$message['level']] . '">' . $prefix . $message['message'] . '</div>' . EOL;
 } // foreach
 ?>
 

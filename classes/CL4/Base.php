@@ -298,8 +298,12 @@ class CL4_Base {
 	 *
 	 * @return string
 	 */
-	public static function get_message($file, $path) {
-		return Kohana::message(i18n::lang() . '/' . $file, $path, __('[message not found]'));
+	public static function get_message($file, $path, $data = NULL) {
+		$message = Kohana::message(i18n::lang() . '/' . $file, $path, __('[message not found]'));
+		if (is_array($data)) {
+			$message = strtr($message, $data);
+		}
+		return $message;
 	}
 
 	/**

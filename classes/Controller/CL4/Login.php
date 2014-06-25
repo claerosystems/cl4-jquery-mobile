@@ -198,7 +198,7 @@ class Controller_CL4_Login extends Controller_Base {
 						LONG_NAME . ' Password Reset',
 						Base::get_view('email/forgot_link', array(
 							'user' => $user,
-							'url' => URL_ROOT . '/reset?username=' . $user->username  . '&reset_token=' . $user->reset_token,
+							'url' => Base::get_url('login', array('action' => 'reset')) . '?username=' . $user->username  . '&reset_token=' . $user->reset_token,
 						))
 					);
 
@@ -402,7 +402,7 @@ class Controller_CL4_Login extends Controller_Base {
 	public function action_noaccess() {
 		// set the template title (see Controller_App for implementation)
 		$this->template->page_title = 'Access Not Allowed';
-		$view = $this->template->body_html = View::factory('cl4/cl4login/no_access')
+		$view = $this->template->body_html = Base::get_view('cl4/cl4login/no_access')
 			->set('referrer', CL4::get_param('referrer'));
 	}
 
