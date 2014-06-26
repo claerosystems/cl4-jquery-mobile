@@ -30,11 +30,12 @@ return array(
 	'default_model' => NULL, // used to determine which model to display by default; if set to null, the default will be the model in model_list
 	// an array of actions that shouldn't be used in permission checking (because it saves on a lot of extra permissions)
 	'action_to_permission' => array(
+		'add_multiple' => 'add',
 		'cancel' => 'index',
 		'cancel_search' => 'index',
-		'download' => 'index',
-		'add_multiple' => 'add',
-		'edit_multiple' => 'edit',
 		'create' => 'model_create',
+		'download' => 'index',
+		'edit_multiple' => 'edit',
+		'lookup' => 'index',
 	),
 );

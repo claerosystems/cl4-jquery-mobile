@@ -31,7 +31,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	// secure actions is false because there is special functionality for cl4admin (see check_perm())
 	//public $secure_actions = FALSE; leaving value as default
 
-	protected $no_auto_render_actions = array('download', 'export');
+	protected $no_auto_render_actions = array('download', 'export', 'lookup');
 
 	/**
 	* Runs before the action
@@ -80,7 +80,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			// if there is no new model to go to, redirect them to the no access page
 			if (empty($go_to_model)) {
 				$this->set_session();
-				$this->redirect('/login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
+				$this->redirect(Base::get_url('login', array('action' => 'noaccess')) . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
 			}
 
 			$this->set_session();
@@ -100,10 +100,10 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			} else if ($this->model_name != $default_model && ! empty($default_model)) {
 				Message::message('cl4admin', 'no_permission_item', NULL, Message::$error);
 				$this->set_session();
-				$this->redirect('/dbadmin/' . $default_model . '/index');
+				$this->redirect(Base::get_url('cl4admin', array('action' => 'index', 'model' => $default_model)));
 			} else {
 				$this->set_session();
-				$this->redirect('/login/noaccess' . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
+				$this->redirect(Base::get_url('login', array('action' => 'noaccess')) . URL::array_to_query(array('referrer' => $this->request->uri()), '&'));
 			}
 		} // if
 
@@ -111,7 +111,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		if ( ! isset($model_list[$this->model_name]) && ! CL4::is_dev()) {
 			Message::message('cl4admin', 'model_not_defined', array(':model_name' => $this->model_name), Message::$debug);
 			$this->set_session();
-			$this->redirect('/dbadmin/' . $default_model . '/index');
+			$this->redirect(Base::get_url('cl4admin', array('action' => 'index', 'model' => $default_model)));
 		}
 
 		$this->model_session = Session::instance()->path($this->session_key . '.' . $this->model_name);
@@ -142,93 +142,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function before
 
 	/**
-	 * Deprecated: does nothing.
-	 * Adds the CSS for cl4admin
-	*/
-	protected function add_css() {
-
-	} // function add_css
-
-	/**
-	* Stores the current values for page, search and sorting in the session
-	*/
-	public function after() {
-		$this->set_session();
-
-		parent::after();
-	} // function after
-
-	/**
-	 * Sets the values in the model_session to the values in the controller properties.
-	 * Otherwise we'll loose the values when we go to the next page.
-	 *
-	 * @return void
-	 */
-	protected function set_session() {
-		$this->model_session['page'] = $this->page_offset;
-		$this->model_session['sort_by_column'] = $this->sort_column;
-		$this->model_session['sort_by_order'] = $this->sort_order;
-		$this->model_session['search'] = $this->search;
-
-		Session::instance()->set_path($this->session_key . '.' . $this->model_name, $this->model_session);
-	}
-
-	/**
-	 * Set the properties on the controller to the values in the model session property.
-	 * Used in conjunction with set_session.
-	 *
-	 * @return void
-	 */
-	protected function set_controller_properties() {
-		$this->page_offset = $this->model_session['page'];
-		$this->sort_column = $this->model_session['sort_by_column'];
-		$this->sort_order = $this->model_session['sort_by_order'];
-		$this->search = ( ! empty($this->model_session['search']) ? $this->model_session['search'] : NULL);
-	}
-
-	/**
-	* Load the model
-	*
-	* @param  string  $mode  The mode to load the model in (view, edit, add, search, etc)
-	*/
-	protected function load_model($mode = 'view') {
-		try {
-			$default_orm_options = array(
-				'mode' => $mode,
-				'db_group' => $this->db_group,
-			);
-
-			$orm_options = Arr::merge($default_orm_options, $this->override_orm_options);
-
-			Message::message('cl4admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
-
-			$this->target_object = ORM::factory($this->model_name, $this->id, $orm_options);
-			if ($this->auto_render) $this->template->page_title = $this->target_object->_table_name_display . ' Administration' . $this->template->page_title;
-
-			// generate the friendly model name used to display to the user
-			$this->model_display_name = $this->get_model_display_name($this->target_object);
-
-			Message::message('cl4admin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
-
-		} catch (Exception $e) {
-			// display the error message
-			Kohana_Exception::handler_continue($e);
-			Message::message('cl4admin', 'problem_loading_data', NULL, Message::$error);
-			Message::message('cl4admin', 'problem_loading_model', array(':model_name' => $this->model_name), Message::$debug);
-
-			// display the help view
-			if (CL4::is_dev() && $e->getCode() == 3001) {
-				Message::message('cl4admin', 'model_dne', array(':model_name' => $this->model_name), Message::$debug);
-			}
-
-			// redirect back to the page and display the error
-			$this->set_session();
-			$this->redirect(Route::get('cl4admin')->uri(array('model' => key($model_list))));
-
-		} // try
-	} // function load_model
-
-	/**
 	* The default action
 	* Just displays the editable list using display_editable_list()
 	*/
@@ -238,99 +151,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		$this->display_editable_list($this->override_list_options);
 	}
-
-	/**
-	* Display the editable list of records for the selected object.
-	*
-	* @param  array  $override_options  A list of options that can be set to override default behaviours.
-	*/
-	public function display_editable_list($override_options = array()) {
-		// display the object / table select
-		$view_content = $this->display_model_select();
-
-		// set up the admin options
-		$options = array(
-			'get_form_view_file' => i18n::lang() . '/form/orm_form_mobile',
-			'mode' => 'view',
-			'sort_by_column' => $this->sort_column,
-			'sort_by_order' => $this->sort_order,
-			'page_offset' => $this->page_offset,
-			'in_search' => ( ! empty($this->search) || ! empty($this->sort_column)),
-			'page_max_rows' => 50,
-			'editable_list_options' => array(
-				'table_options_multiorm' => array(
-					'table_attributes' => array(
-						'class' => 'cl4_content ui-responsive table-stroke',
-						'data-role' => "table",
-						'data-mode' =>"reflow",
-					),
-				),
-				'per_row_links' => array(
-					'view' => FALSE,     // view button
-					'edit' => $this->check_perm('edit'),     // edit button
-					'delete' => $this->check_perm('delete'),   // delete button
-					'add' => $this->check_perm('add'),      // add (duplicate) button
-					'checkbox' => ($this->check_perm('edit') || $this->check_perm('export')), // checkbox
-				),
-				'top_bar_buttons' => array(
-					'add' => $this->check_perm('add'),             // add (add new) button
-					'add_multiple' => FALSE, //$this->check_perm('add'),    // add multiple button
-					'edit' => FALSE, //$this->check_perm('edit'),            // edit (edit selected) button
-					'export_selected' => $this->check_perm('export'), // export selected button
-					'export_all' => $this->check_perm('export'),      // export all button
-					'search' => $this->check_perm('search'),          // search button
-				),
-				'top_bar_buttons_custom' => array(
-
-				)
-			),
-		);
-		$options = Arr::merge($options, $override_options);
-
-		//try {
-			$orm_multiple = new MultiORM($this->model_name, $options);
-
-			// there is a search so apply it
-			if ( ! empty($this->search)) {
-				$orm_multiple->set_search($this->search);
-			}
-
-			$view_content .= $orm_multiple->get_editable_list($options);
-		//} catch (Exception $e) {
-		//	Kohana_Exception::handler_continue($e);
-		//	$view_content .= Kohana::message('cl4admin', 'problem_preparing');
-		//}
-
-		$this->add_admin_view('', $view_content);
-	} // function display_editable_list
-
-	/**
-	* Adds the admin view to $this->template->body_html, setting the title and content
-	*
-	* @param  string  $title    The title to use in the view
-	* @param  string  $content  The content to put in the content container in the view
-	*/
-	protected function add_admin_view($title, $content) {
-		$this->template->body_html .= Base::get_view('admin')
-			->bind('title', $title)
-			->bind('content', $content);
-	} // function add_admin_view
-
-	/**
-	* Returns the page title based on a message file, merged with the display name of the model
-	* Used in conjunction with add_admin_view()
-	*
-	* @param  string   $message_path  The path as used by Kohana::message() to the location of the message
-	* @param  mixed    $display_name
-	* @return string   The title of the page
-	*/
-	protected function get_page_title_message($message_path, $display_name = NULL) {
-		if ($display_name === NULL) {
-			$display_name = $this->model_display_name;
-		}
-
-		return __(Kohana::message('cl4admin', $message_path), array(':display_name' => HTML::chars($display_name)));
-	} // function get_page_title_message
 
 	/**
 	* Cancel the current action by redirecting back to the index action
@@ -388,41 +208,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function action_edit
 
 	/**
-	* Used by add and edit to save (insert or update) the record
-	*/
-	public function save_model() {
-		try {
-			// save the record
-			$custom_save_method = 'save_model_' . $this->model_name;
-			if (method_exists($this, $custom_save_method)) {
-				$this->$custom_save_method();
-			} else {
-				$this->target_object->save_values()->save();
-			}
-			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
-			$this->redirect_to_index();
-		} catch (ORM_Validation_Exception $e) {
-			Message::message('cl4admin', 'values_not_valid', array(
-				':validation_errors' => Message::add_validation_errors($e, $this->model_name)
-			), Message::$error);
-		}
-	} // function save_model
-
-	/**
-	* Views the record in a similar fashion to an edit, but without actual input fields
-	*/
-	public function action_view() {
-		if ( ! ($this->id > 0)) {
-			throw new Kohana_Exception('No ID received for view');
-		}
-
-		$this->load_model('view');
-
-		$this->set_page_title('View');
-		$this->add_admin_view(HTML::chars($this->model_display_name), $this->target_object->get_view());
-	} // function
-
-	/**
 	* Add and save/insert multiple records
 	*/
 	public function action_add_multiple() {
@@ -464,37 +249,17 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function action_add_multiple
 
 	/**
-	* Edit and save/update multiple records
-	*/
-	public function action_edit_multiple() {
-		// set up the admin options
-		$orm_multiple = MultiORM::factory($this->model_name, array('mode' => 'edit'));
+	 * Clears the search from the session and redirects the user to the index page for the model
+	 */
+	public function action_cancel_search() {
+		// reset the search and search in the session
+		$this->model_session = Kohana::$config->load('cl4admin.default_list_options');
+		$this->set_controller_properties();
 
-		if (empty($_POST['ids'])) {
-			$ids = NULL;
+		Message::add('Search and sort criteria has been reset.', Message::$debug);
 
-			try {
-				$orm_multiple->save_values()->save();
-				Message::message('cl4admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
-				$this->redirect_to_index();
-			} catch (ORM_Validation_Exception $e) {
-				$validation_exceptions = $orm_multiple->validation_exceptions();
-				foreach ($validation_exceptions as $num => $exception) {
-					Message::message('cl4admin', 'values_not_valid_multiple', array(
-						':record_number' => ($num + 1),
-						':validation_errors' => Message::add_validation_errors($exception)
-					), Message::$error);
-				}
-			}
-		} else {
-			$ids = $_POST['ids'];
-		} // if
-
-		$this->set_page_title('Add');
-		$view_title = $this->get_page_title_message('multiple_edit_item', $orm_multiple->_table_name_display);
-		$view_content = $orm_multiple->get_edit_multiple($ids);
-		$this->add_admin_view($view_title, $view_content);
-	} // function action_edit_multiple
+		$this->redirect_to_index();
+	} // function action_cancel_search
 
 	/**
 	* Delete a record with a confirm first
@@ -566,6 +331,39 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function download
 
 	/**
+	 * Edit and save/update multiple records
+	 */
+	public function action_edit_multiple() {
+		// set up the admin options
+		$orm_multiple = MultiORM::factory($this->model_name, array('mode' => 'edit'));
+
+		if (empty($_POST['ids'])) {
+			$ids = NULL;
+
+			try {
+				$orm_multiple->save_values()->save();
+				Message::message('cl4admin', 'multiple_saved', array(':records_saved' => $orm_multiple->records_saved()), Message::$notice);
+				$this->redirect_to_index();
+			} catch (ORM_Validation_Exception $e) {
+				$validation_exceptions = $orm_multiple->validation_exceptions();
+				foreach ($validation_exceptions as $num => $exception) {
+					Message::message('cl4admin', 'values_not_valid_multiple', array(
+						':record_number' => ($num + 1),
+						':validation_errors' => Message::add_validation_errors($exception)
+					), Message::$error);
+				}
+			}
+		} else {
+			$ids = $_POST['ids'];
+		} // if
+
+		$this->set_page_title('Add');
+		$view_title = $this->get_page_title_message('multiple_edit_item', $orm_multiple->_table_name_display);
+		$view_content = $orm_multiple->get_edit_multiple($ids);
+		$this->add_admin_view($view_title, $view_content);
+	} // function action_edit_multiple
+
+	/**
 	 * Exports the records, either all or checked using MultiORM.
 	 * Generates either a PHPExcel file (if available) or CSV otherwise.
 	 */
@@ -613,6 +411,45 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		}
 	} // function action_export
 
+	public function action_lookup() {
+		$search_text = CL4::get_param('q', NULL, 'string');
+		$return_data = array(
+			'status' => TRUE,
+			'status_message' => 'The query was successful.',
+			'data' => array(),
+		);
+
+		$result = DB::select('id', 'name')
+			->from('company')
+			->where('name', 'LIKE', "%{$search_text}%")
+			->and_where('active_flag', '=', 1)
+			->and_where('company_type_id', '=', COMPANY_TYPE_ID_CLIENT)
+			->and_where('province_id', '=', QC_PROV_ID)
+			->order_by('name', 'ASC')
+			->limit(100)
+			->execute();
+		if ($result) {
+			if ($result->count() > 0) {
+				foreach ($result->as_array('id') as $id => $data) {
+					$return_data['data'][] = array(
+						'id' => $id,
+						'name' => htmlentities($data['name'], ENT_QUOTES),
+					);
+				}
+			} else {
+				// no results found
+				$return_data['status_message'] = 'No results were found with this criteria.';
+			}
+		} else {
+			// query failure
+			$return_data['status'] = 0;
+			$return_data['status_message'] = 'The query failed.';
+		}
+
+		echo json_encode($return_data);
+		exit;
+	}
+
 	/**
 	* Prepares the search form
 	*/
@@ -638,17 +475,47 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	}
 
 	/**
-	* Clears the search from the session and redirects the user to the index page for the model
-	*/
-	public function action_cancel_search() {
-		// reset the search and search in the session
-		$this->model_session = Kohana::$config->load('cl4admin.default_list_options');
-		$this->set_controller_properties();
+	 * Views the record in a similar fashion to an edit, but without actual input fields
+	 */
+	public function action_view() {
+		if ( ! ($this->id > 0)) {
+			throw new Kohana_Exception('No ID received for view');
+		}
 
-		Message::add('Search and sort criteria has been reset.', Message::$debug);
+		$this->load_model('view');
 
-		$this->redirect_to_index();
-	} // function action_cancel_search
+		$this->set_page_title('View');
+		$this->add_admin_view(HTML::chars($this->model_display_name), $this->target_object->get_view());
+	} // function
+
+	/**
+	 * Adds the admin view to $this->template->body_html, setting the title and content
+	 *
+	 * @param  string  $title    The title to use in the view
+	 * @param  string  $content  The content to put in the content container in the view
+	 */
+	protected function add_admin_view($title, $content) {
+		$this->template->body_html .= Base::get_view('admin')
+			->bind('title', $title)
+			->bind('content', $content);
+	} // function add_admin_view
+
+	/**
+	 * Deprecated: does nothing.
+	 * Adds the CSS for cl4admin
+	 */
+	protected function add_css() {
+
+	} // function add_css
+
+	/**
+	 * Stores the current values for page, search and sorting in the session
+	 */
+	public function after() {
+		$this->set_session();
+
+		parent::after();
+	} // function after
 
 	/**
 	* Checks the permission based on action and the cl4admin controller
@@ -673,6 +540,71 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function
 
 	/**
+	 * Display the editable list of records for the selected object.
+	 *
+	 * @param  array  $override_options  A list of options that can be set to override default behaviours.
+	 */
+	public function display_editable_list($override_options = array()) {
+		// display the object / table select
+		$view_content = $this->display_model_select();
+
+		// set up the admin options
+		$options = array(
+			'get_form_view_file' => i18n::lang() . '/form/orm_form_mobile',
+			'mode' => 'view',
+			'sort_by_column' => $this->sort_column,
+			'sort_by_order' => $this->sort_order,
+			'page_offset' => $this->page_offset,
+			'in_search' => ( ! empty($this->search) || ! empty($this->sort_column)),
+			'page_max_rows' => 50,
+			'editable_list_options' => array(
+				'table_options_multiorm' => array(
+					'table_attributes' => array(
+						'class' => 'cl4_content ui-responsive table-stroke',
+						'data-role' => "table",
+						'data-mode' =>"reflow",
+					),
+				),
+				'per_row_links' => array(
+					'view' => FALSE,     // view button
+					'edit' => $this->check_perm('edit'),     // edit button
+					'delete' => $this->check_perm('delete'),   // delete button
+					'add' => $this->check_perm('add'),      // add (duplicate) button
+					'checkbox' => ($this->check_perm('edit') || $this->check_perm('export')), // checkbox
+				),
+				'top_bar_buttons' => array(
+					'add' => $this->check_perm('add'),             // add (add new) button
+					'add_multiple' => FALSE, //$this->check_perm('add'),    // add multiple button
+					'edit' => FALSE, //$this->check_perm('edit'),            // edit (edit selected) button
+					'export_selected' => $this->check_perm('export'), // export selected button
+					'export_all' => $this->check_perm('export'),      // export all button
+					'search' => $this->check_perm('search'),          // search button
+				),
+				'top_bar_buttons_custom' => array(
+
+				)
+			),
+		);
+		$options = Arr::merge($options, $override_options);
+
+		//try {
+		$orm_multiple = new MultiORM($this->model_name, $options);
+
+		// there is a search so apply it
+		if ( ! empty($this->search)) {
+			$orm_multiple->set_search($this->search);
+		}
+
+		$view_content .= $orm_multiple->get_editable_list($options);
+		//} catch (Exception $e) {
+		//	Kohana_Exception::handler_continue($e);
+		//	$view_content .= Kohana::message('cl4admin', 'problem_preparing');
+		//}
+
+		$this->add_admin_view('', $view_content);
+	} // function display_editable_list
+
+	/**
 	* Creates a drop down of all model the available models as returned by get_model_list()
 	* Returns the view cl4/cl4admin/header
 	*
@@ -687,23 +619,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			'model_select' => $model_select,
 			'form_action' => URL::site($this->request->uri()) . URL::query(),
 		));
-	} // function
-
-	/**
-	* grab the model list from the cl4admin config file
-	*
-	*/
-	public function get_model_list() {
-		$model_list = Kohana::$config->load('cl4admin.model_list');
-		if ($model_list === NULL) $model_list = array();
-
-		// remove any models that have name that are empty (NULL, FALSE, etc)
-		// or that the user doesn't have permission to see the list of records (index)
-		foreach ($model_list as $model => $name) {
-			if (empty($name) || ! $this->check_perm('index', $model)) unset($model_list[$model]);
-		}
-
-		return $model_list;
 	} // function
 
 	/**
@@ -729,6 +644,81 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	}
 
 	/**
+	 * grab the model list from the cl4admin config file
+	 *
+	 */
+	public function get_model_list() {
+		$model_list = Kohana::$config->load('cl4admin.model_list');
+		if ($model_list === NULL) $model_list = array();
+
+		// remove any models that have name that are empty (NULL, FALSE, etc)
+		// or that the user doesn't have permission to see the list of records (index)
+		foreach ($model_list as $model => $name) {
+			if (empty($name) || ! $this->check_perm('index', $model)) unset($model_list[$model]);
+		}
+
+		return $model_list;
+	} // function
+
+	/**
+	 * Returns the page title based on a message file, merged with the display name of the model
+	 * Used in conjunction with add_admin_view()
+	 *
+	 * @param  string   $message_path  The path as used by Kohana::message() to the location of the message
+	 * @param  mixed    $display_name
+	 * @return string   The title of the page
+	 */
+	protected function get_page_title_message($message_path, $display_name = NULL) {
+		if ($display_name === NULL) {
+			$display_name = $this->model_display_name;
+		}
+
+		return __(Kohana::message('cl4admin', $message_path), array(':display_name' => HTML::chars($display_name)));
+	} // function get_page_title_message
+
+	/**
+	 * Load the model
+	 *
+	 * @param  string  $mode  The mode to load the model in (view, edit, add, search, etc)
+	 */
+	protected function load_model($mode = 'view') {
+		try {
+			$default_orm_options = array(
+				'mode' => $mode,
+				'db_group' => $this->db_group,
+			);
+
+			$orm_options = Arr::merge($default_orm_options, $this->override_orm_options);
+
+			Message::message('cl4admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
+
+			$this->target_object = ORM::factory($this->model_name, $this->id, $orm_options);
+			if ($this->auto_render) $this->template->page_title = $this->target_object->_table_name_display . ' Administration' . $this->template->page_title;
+
+			// generate the friendly model name used to display to the user
+			$this->model_display_name = $this->get_model_display_name($this->target_object);
+
+			Message::message('cl4admin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
+
+		} catch (Exception $e) {
+			// display the error message
+			Kohana_Exception::handler_continue($e);
+			Message::message('cl4admin', 'problem_loading_data', NULL, Message::$error);
+			Message::message('cl4admin', 'problem_loading_model', array(':model_name' => $this->model_name), Message::$debug);
+
+			// display the help view
+			if (CL4::is_dev() && $e->getCode() == 3001) {
+				Message::message('cl4admin', 'model_dne', array(':model_name' => $this->model_name), Message::$debug);
+			}
+
+			// redirect back to the page and display the error
+			$this->set_session();
+			$this->redirect(Route::get('cl4admin')->uri(array('model' => key($model_list))));
+
+		} // try
+	} // function load_model
+
+	/**
 	 * Sets the page title on the template.
 	 * Standard format is: [action] - [model display name] - Administration - [site long name]
 	 *
@@ -748,5 +738,54 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		//$this->redirect('/' . Route::get(Route::name($this->request->route()))->uri(array('model' => $this->model_name, 'action' => 'index')));
 		//$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
 		$this->redirect(Base::get_url(Route::name($this->request->route()), array('prov' => $this->prov, 'model' => $this->model_name, 'action' => 'index')));
+	}
+
+	/**
+	 * Used by add and edit to save (insert or update) the record
+	 */
+	public function save_model() {
+		try {
+			// save the record
+			$custom_save_method = 'save_model_' . $this->model_name;
+			if (method_exists($this, $custom_save_method)) {
+				$this->$custom_save_method();
+			} else {
+				$this->target_object->save_values()->save();
+			}
+			Message::message('cl4admin', 'item_saved', NULL, Message::$notice);
+			$this->redirect_to_index();
+		} catch (ORM_Validation_Exception $e) {
+			Message::message('cl4admin', 'values_not_valid', array(
+				':validation_errors' => Message::add_validation_errors($e, $this->model_name)
+			), Message::$error);
+		}
+	} // function save_model
+
+	/**
+	 * Sets the values in the model_session to the values in the controller properties.
+	 * Otherwise we'll loose the values when we go to the next page.
+	 *
+	 * @return void
+	 */
+	protected function set_session() {
+		$this->model_session['page'] = $this->page_offset;
+		$this->model_session['sort_by_column'] = $this->sort_column;
+		$this->model_session['sort_by_order'] = $this->sort_order;
+		$this->model_session['search'] = $this->search;
+
+		Session::instance()->set_path($this->session_key . '.' . $this->model_name, $this->model_session);
+	}
+
+	/**
+	 * Set the properties on the controller to the values in the model session property.
+	 * Used in conjunction with set_session.
+	 *
+	 * @return void
+	 */
+	protected function set_controller_properties() {
+		$this->page_offset = $this->model_session['page'];
+		$this->sort_column = $this->model_session['sort_by_column'];
+		$this->sort_order = $this->model_session['sort_by_order'];
+		$this->search = ( ! empty($this->model_session['search']) ? $this->model_session['search'] : NULL);
 	}
 }

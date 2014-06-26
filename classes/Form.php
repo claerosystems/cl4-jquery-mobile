@@ -232,4 +232,40 @@ class Form extends CL4_Form {
 			'options' => $options,
 		));
 	} // function radios
+
+	public static function suggest($name, $value = FALSE, $value_text = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array()) {
+		$html = '';
+
+		$default_options = array(
+		);
+		$options += $default_options;
+
+		if ($attributes === NULL) $attributes = array();
+		$attributes += array(
+			'data-model_name' => $model_name,
+			'data-column_name' => $column_name,
+			'data-value' => $value,
+			//'data-role' => 'listview',
+			'data-inset' => 'true',
+			'placeholder' => __('Enter search text...'),
+			//'data-filter' => 'true',
+			//'data-filter-placeholder' => __('Enter search text...'),
+			//'data-filter-theme' => 'c',
+		);
+
+		$attributes = HTML::set_class_attribute($attributes, 'js_cl4_suggest');
+
+		// add the search field / results list
+		//$html .= '<ul' . HTML::attributes($attributes) . '></ul>';
+
+		$html .= Form::input($name, $value_text, $attributes);
+
+		// add the selected values ID field - used for saving and searching
+		$html .= Form::hidden('id_for_' . $name, $value);
+
+		// add list view for searching
+		$html .= '<ul id="ajax_search_' . $column_name . '" data-role="listview" data-inset="true"></ul>';
+
+		return $html;
+	}
 }
