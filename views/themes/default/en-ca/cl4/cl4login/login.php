@@ -1,7 +1,7 @@
 <h1>Welcome to the <?php echo LONG_NAME; ?></h1>
 <div class="login">
 	<?php $default_username = Cookie::get('username', ''); ?>
-	<?php echo Form::open(Base::get_url('login'), array('id' => 'login_form')); ?>
+	<?php echo Form::open(Base::get_url('login'), array('id' => 'login_form', 'data-ajax' => 'false')); ?>
 	<?php echo Form::hidden('redirect', $redirect); ?>
 
 	<div data-role="fieldcontain" class="ui-hide-label">
@@ -14,7 +14,6 @@
 		<input type="password" name="password" id="password" value="" placeholder="Password" autocomplete="off" autocapitalize="off"<?php if ( ! empty($default_username)) echo ' autofocus'; ?>>
 	</div>
 	<?php //echo HTML::anchor(Route::get('login')->uri(array('action' => 'forgot')), 'Forgot Password?', array('data-inline' => 'true', 'data-role' => 'button')) ?>
-
 	<?php echo HTML::anchor('#forgot_form', 'Forgot Password', array(
 		'data-inline' => 'true',
 		'data-role' => 'button',
