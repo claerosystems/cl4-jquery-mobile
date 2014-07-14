@@ -491,6 +491,21 @@ class CL4_Base {
 			$from_email = ( ! empty($options['send_from_email'])) ? $options['send_from_email'] : DEFAULT_FROM_EMAIL;
 			$from_name = ( ! empty($options['send_from_name'])) ? $options['send_from_name'] : DEFAULT_FROM_NAME;
 			$text_content = ( ! empty($options['text_content'])) ? $options['text_content'] : '';
+			$attachments = ( ! empty($options['attachments'])) ? $options['attachments'] : '';
+
+			$to = array(
+				array(
+					'email' => $to_email,
+					'name' => $to_name,
+					'type' => 'to'
+				)
+			);
+
+			if ( ! empty($options['additional_recipients'])) {
+				foreach ($options['additional_recipients'] as $recipient) {
+					$to[] = $recipient;
+				}
+			}
 
 			$message = array(
 				'html' => Base::get_view('email/header') . $html_content . Base::get_view('email/footer'),
@@ -498,18 +513,13 @@ class CL4_Base {
 				'subject' => $subject,
 				'from_email' => $from_email,
 				'from_name' => $from_name,
-				'to' => array(
-					array(
-						'email' => $to_email,
-						'name' => $to_name,
-						'type' => 'to'
-					)
-				),
+				'to' => $to,
 				//'headers' => array('Reply-To' => $from_email),
 				//'important' => false,
 				'track_opens' => null,
 				'track_clicks' => null,
 				'auto_text' => (empty($text_content)) ? TRUE : FALSE,
+				'attachments' => $attachments,
 				/*
 				'auto_html' => null,
 				'inline_css' => null,
@@ -566,13 +576,19 @@ class CL4_Base {
 				*/
 			);
 
+			//echo Debug::vars($message);exit;
+
 			$result = $mandrill->messages->send($message);
 
 			if ( ! empty($result[0]['status']) && $result[0]['status'] == 'sent') {
 				Message::add('Email with subject ' . $subject . ' sent from ' . $from_email . ' to ' . $to_email, Message::$debug);
 				return TRUE;
+			} else if ( ! empty($result[0]['status']) && $result[0]['status'] == 'queued') {
+				Message::add('Email with subject ' . $subject . ' from ' . $from_email . ' to ' . $to_email . ' has been queued for delivery', Message::$debug);
+				return TRUE;
 			} else {
 				Base::message('base', 'email_error', array('%subject%' => $subject, '%from%' => $from_email, '%to' => $to_email), Message::$error);
+				Message::add(Debug::vars($result), Message::$debug);
 			}
 
 			/*
