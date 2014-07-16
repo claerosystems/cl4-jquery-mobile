@@ -233,6 +233,20 @@ class Form extends CL4_Form {
 		));
 	} // function radios
 
+	/**
+	 * Set up an ajax suggest field.
+	 *
+	 * Right now this will only work with a single record on each page because the id field uses model_column
+	 *
+	 * @param $name
+	 * @param bool $value
+	 * @param null $value_text
+	 * @param $model_name
+	 * @param $column_name
+	 * @param array $attributes
+	 * @param array $options
+	 * @return string
+	 */
 	public static function suggest($name, $value = FALSE, $value_text = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array()) {
 		$html = '';
 
@@ -261,7 +275,7 @@ class Form extends CL4_Form {
 		$html .= Form::input($name, $value_text, $attributes);
 
 		// add the selected values ID field - used for saving and searching
-		$html .= Form::hidden('id_for_' . $name, $value);
+		$html .= Form::hidden('id_for_' . $model_name . '_' . $column_name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
 
 		// add list view for searching
 		$html .= '<ul id="ajax_search_' . $column_name . '" data-role="listview" data-inset="true"></ul>';
