@@ -265,6 +265,7 @@ class Form extends CL4_Form {
 			//'data-filter' => 'true',
 			//'data-filter-placeholder' => __('Enter search text...'),
 			//'data-filter-theme' => 'c',
+			'autocomplete' => 'off',
 		);
 
 		$attributes = HTML::set_class_attribute($attributes, 'js_cl4_suggest');
@@ -272,11 +273,17 @@ class Form extends CL4_Form {
 		// add the search field / results list
 		//$html .= '<ul' . HTML::attributes($attributes) . '></ul>';
 
+		$html .= Form::input('name_for_' . $model_name . '_' . $column_name, $value_text, $attributes);
+
+		// add the selected values ID field - used for saving and searching
+		$html .= Form::hidden($name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
+
+/*
 		$html .= Form::input($name, $value_text, $attributes);
 
 		// add the selected values ID field - used for saving and searching
 		$html .= Form::hidden('id_for_' . $model_name . '_' . $column_name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
-
+*/
 		// add list view for searching
 		$html .= '<ul id="ajax_search_' . $column_name . '" data-role="listview" data-inset="true"></ul>';
 
