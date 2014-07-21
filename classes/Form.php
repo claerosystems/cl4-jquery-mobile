@@ -247,7 +247,7 @@ class Form extends CL4_Form {
 	 * @param array $options
 	 * @return string
 	 */
-	public static function suggest($name, $value = FALSE, $value_text = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array()) {
+	public static function suggest($name, $value_id = FALSE, $value_name = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array()) {
 		$html = '';
 
 		$default_options = array(
@@ -258,7 +258,7 @@ class Form extends CL4_Form {
 		$attributes += array(
 			'data-model_name' => $model_name,
 			'data-column_name' => $column_name,
-			'data-value' => $value,
+			'data-value' => $value_id,
 			//'data-role' => 'listview',
 			'data-inset' => 'true',
 			'placeholder' => __('Enter search text...'),
@@ -273,10 +273,10 @@ class Form extends CL4_Form {
 		// add the search field / results list
 		//$html .= '<ul' . HTML::attributes($attributes) . '></ul>';
 
-		$html .= Form::input('name_for_' . $model_name . '_' . $column_name, $value_text, $attributes);
+		$html .= Form::input('name_for_' . $model_name . '_' . $column_name, $value_name, $attributes);
 
 		// add the selected values ID field - used for saving and searching
-		$html .= Form::hidden($name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
+		$html .= Form::hidden($name, $value_id, array('id' => 'id_for_' . $model_name . '_' . $column_name));
 
 /*
 		$html .= Form::input($name, $value_text, $attributes);

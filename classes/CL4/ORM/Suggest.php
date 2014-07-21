@@ -2,8 +2,21 @@
 
 class CL4_ORM_Suggest extends CL4_ORM_Text {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
-		if ( ! empty($value_text)) {
-			$value_text = $orm_model->get_source_data($column_name, $value);
+
+		// need to get the selected value if there is one
+		if ($value > 0) {
+			$options = $orm_model->get_meta_data($column_name)['field_options']['source'];
+			$name_field_name = $options['name_field'][1];
+			$data = DB::select(
+					array(DB::expr($options['id_field'][0]), $options['id_field'][1]),
+					array(DB::expr($options['name_field'][0]), $options['name_field'][1])
+				)
+				->from($options['from_table'])
+				->where($options['id_field'][0], '=', $value)
+				->limit(1)
+				->execute()
+				->as_array();
+			$value_text = $data[0][$name_field_name];
 		} else {
 			$value_text = '';
 		}
