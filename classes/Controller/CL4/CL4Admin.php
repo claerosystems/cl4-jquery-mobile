@@ -180,7 +180,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		);
 		if ( ! empty($this->id)) {
 			// set the form action because the current url includes the id of the record which will cause an update, not an add
-			$form_options['form_action'] = URL::site($this->request->route()->uri(array('model' => $this->model_name, 'action' => 'add'))) . URL::query();
+			$form_options['form_action'] = Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'add')) . URL::query();
+			//URL::site($this->request->route()->uri(array('model' => $this->model_name, 'action' => 'add'))) . URL::query();
 		}
 
 		$view_content = $this->target_object->get_form($form_options);
@@ -411,7 +412,16 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		}
 	} // function action_export
 
+	public static function lookup_filter($value) {
+		$search_text = CL4::get_param('q', NULL, 'string');
+		if (substr_count($value, $search_text) > 0) return TRUE;
+	}
+
+	/**
+	 * Used by ajax suggest fields to provide a list of options as the user types.
+	 */
 	public function action_lookup() {
+		$column_name = $this->request->param('column_name');
 		$search_text = CL4::get_param('q', NULL, 'string');
 		$return_data = array(
 			'status' => TRUE,
@@ -419,6 +429,81 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			'data' => array(),
 		);
 
+		$this->load_model('add');
+
+		$options = $this->target_object->get_meta_data($column_name)['field_options']['source'];
+
+		if ($options['source'] == 'sql') {
+			$query = DB::select(
+				array(DB::expr($options['id_field'][0]), $options['id_field'][1]),
+				array(DB::expr($options['name_field'][0]), $options['name_field'][1])
+			);
+
+			$query->from($options['from_table']);
+
+			foreach($options['and_where'] as $and_where) {
+				$query->and_where($and_where[0], $and_where[1], $and_where[2]);
+			}
+
+			$query->and_where_open();
+			foreach($options['search_columns'] as $search_column) {
+				$query->or_where($search_column, 'LIKE', "%{$search_text}%");
+			}
+			$query->and_where_close();
+
+			$query->order_by($options['order_by'], 'ASC');
+
+			$query->limit($options['limit']);
+
+			//echo Debug::vars( (string)$query);
+
+			$result = $query->execute();
+			if ($result) {
+				if ($result-> count() > 0) {
+					foreach ($result->as_array('id') as $id => $data) {
+						$return_data['data'][] = array(
+							'id' => $id,
+							'name' => htmlentities($data['name'], ENT_QUOTES),
+						);
+					}
+				} else {
+					// no results found
+					$return_data['status_message'] = 'No results were found with this criteria.';
+				}
+			} else {
+				// query failure
+				$return_data['status'] = 0;
+				$return_data['status_message'] = 'The query failed.';
+			}
+		} else {
+			die('suggest fields must have a source type of sql');
+		}
+
+/*
+		// get all possible options in to an array (performance?)
+		$option_list = $this->target_object->get_source_data($column_name);
+
+
+		// filter on search text (performance?)
+		$options = array_filter($option_list, function($value) {
+			$search_text = CL4::get_param('q', NULL, 'string');
+			if (substr_count($value, $search_text) > 0) return TRUE;
+		});
+
+		if (sizeof($options) > 0) {
+			foreach($options as $id => $data) {
+				$return_data['data'][] = array(
+					'id' => $id,
+					'name' => htmlentities($data, ENT_QUOTES),
+				);
+			}
+		} else {
+			// no results found
+			$return_data['status_message'] = 'No results were found with this criteria.';
+		}
+*/
+
+/*
 		$result = DB::select('id', 'name')
 			->from('company')
 			->where('name', 'LIKE', "%{$search_text}%")
@@ -445,7 +530,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			$return_data['status'] = 0;
 			$return_data['status_message'] = 'The query failed.';
 		}
-
+*/
 		echo json_encode($return_data);
 		exit;
 	}
@@ -744,6 +829,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	 * Used by add and edit to save (insert or update) the record
 	 */
 	public function save_model() {
+		//echo Debug::vars($_POST);exit;
 		try {
 			// save the record
 			$custom_save_method = 'save_model_' . $this->model_name;
