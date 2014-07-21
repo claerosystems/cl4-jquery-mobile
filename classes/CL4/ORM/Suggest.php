@@ -2,7 +2,11 @@
 
 class CL4_ORM_Suggest extends CL4_ORM_Text {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
-		$value_text = $orm_model->get_source_data($column_name, $value);
+		if ( ! empty($value_text)) {
+			$value_text = $orm_model->get_source_data($column_name, $value);
+		} else {
+			$value_text = '';
+		}
 
 		return Form::suggest($html_name, $value, $value_text, $orm_model->object_name(), $column_name, $attributes);
 	}
