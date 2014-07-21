@@ -266,6 +266,7 @@ class Form extends CL4_Form {
 			//'data-filter-placeholder' => __('Enter search text...'),
 			//'data-filter-theme' => 'c',
 			'autocomplete' => 'off',
+			'id' => 'value_for_' . $model_name . '_' . $column_name,
 		);
 
 		$attributes = HTML::set_class_attribute($attributes, 'js_cl4_suggest');
