@@ -36,6 +36,8 @@
 		<div style="padding:10px 20px;" class="responsive_form">
 			<?php echo Form::open(Base::get_url('login', array('action' => 'forgot')), array('data-ajax' => 'false')); ?>
 			<p>Please enter your email address and click on 'Reset Password' to regain access to your account.</p>
+			<p>If your email address matches an active user account on this system, you will receive an email with a link that will create a new password for you.
+			The new password will then be emailed to you.</p>
 			<div class="ui-field-contain">
 				<label for="email">Your Email (username):</label>
 				<?php echo Form::email('reset_username', NULL, array('id' => 'email')); ?>
