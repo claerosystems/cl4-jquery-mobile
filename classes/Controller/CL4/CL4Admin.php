@@ -441,6 +441,13 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 			$query->from($options['from_table']);
 
+			if ( ! empty($options['join_table'])) {
+				$query->join($options['join_table']);
+				if ( ! empty($options['on']) && is_array($options['on'])) {
+					$query->on($options['on'][0], $options['on'][1], $options['on'][2]);
+				}
+			}
+
 			foreach($options['and_where'] as $and_where) {
 				$query->and_where($and_where[0], $and_where[1], $and_where[2]);
 			}
@@ -775,7 +782,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 			$orm_options = Arr::merge($default_orm_options, $this->override_orm_options);
 
-			Message::message('cl4admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
+			if ($this->auto_render) Message::message('cl4admin', 'using_model', array(':model_name' => $this->model_name, ':mode' => $mode, ':id' => $this->id), Message::$debug);
 
 			$this->target_object = ORM::factory($this->model_name, $this->id, $orm_options);
 			if ($this->auto_render) $this->template->page_title = $this->target_object->_table_name_display . ' Administration' . $this->template->page_title;
@@ -783,7 +790,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			// generate the friendly model name used to display to the user
 			$this->model_display_name = $this->get_model_display_name($this->target_object);
 
-			Message::message('cl4admin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
+			if ($this->auto_render) Message::message('cl4admin', 'model_loaded', array(':model_name' => $this->model_name), Message::$debug);
 
 		} catch (Exception $e) {
 			// display the error message
