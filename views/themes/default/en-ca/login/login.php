@@ -6,12 +6,12 @@
 
 	<div data-role="fieldcontain" class="ui-hide-label">
 		<label for="username">Username</label>
-		<input type="email" data-clear-btn="true" name="username" id="username" value="<?php echo $default_username; ?>" placeholder="Username" autocapitalize="off"<?php if (empty($default_username)) echo ' autofocus'; ?>>
+		<input type="email" data-clear-btn="true" name="username" id="username" value="<?php echo $default_username; ?>" placeholder="Username" autocorrect="off" autocomplete="off" autocapitalize="off"<?php if (empty($default_username)) echo ' autofocus'; ?>>
 	</div>
 
 	<div data-role="fieldcontain" class="ui-hide-label">
 		<label for="password">Password</label>
-		<input type="password" name="password" id="password" value="" placeholder="Password" autocomplete="off" autocapitalize="off"<?php if ( ! empty($default_username)) echo ' autofocus'; ?>>
+		<input type="password" name="password" id="password" value="" placeholder="Password" autocorrect="off" autocomplete="off" autocapitalize="off"<?php if ( ! empty($default_username)) echo ' autofocus'; ?>>
 	</div>
 	<?php //echo HTML::anchor(Route::get('login')->uri(array('action' => 'forgot')), 'Forgot Password?', array('data-inline' => 'true', 'data-role' => 'button')) ?>
 
