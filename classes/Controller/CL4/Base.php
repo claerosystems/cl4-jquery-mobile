@@ -108,12 +108,14 @@ class Controller_CL4_Base extends Controller_Template {
 			if ($this->locale == 'fr-ca') {
 				// french, set the date
 				setlocale(LC_TIME, 'fr_CA.utf8');
+				setlocale(LC_MESSAGES, 'fr_CA.utf8');
 				// create the switch language link
 				$language_switch_link = '<a href="/' . Base::get_url('public', array('lang' => 'en-ca')) . '">EN</a> / FR';
 				$date_input_options = "            format: 'dddd dd, mmmm yyyy'" . EOL;
 			} else {
 				// english, set the date
 				setlocale(LC_TIME, 'en_CA.utf8');
+				setlocale(LC_MESSAGES, 'en_CA.utf8');
 				// create the switch language link
 				$language_switch_link = 'EN / <a href="/' . Base::get_url('public', array('lang' => 'fr-ca')) . '">FR</a>';
 				$date_input_options = "            lang: 'fr', " . EOL; // defined in master js file, must execute before this does
@@ -137,6 +139,13 @@ class Controller_CL4_Base extends Controller_Template {
 		$this->session = Session::instance()->as_array();
 
 		if ($this->auto_render) {
+			// set up css
+			$this->styles['jquery_mobile'] = "/cl4/css/vendor/jquery.mobile-1.4.2.css";
+			$this->styles['jquery_mobile_datepicker'] = "/cl4/css/vendor/jquery.mobile.datepicker.css";
+			$this->styles['font_awesome'] = "/cl4/font-awesome/css/font-awesome.min.css";
+			$this->styles['cl4'] = "/cl4/css/cl4.css";
+			$this->styles['base'] = "/cl4/css/base.css";
+
 			// set up template parameters for optional use when generating views in the main controllers
 			// NB. these only get used when you pass $this->template_parameters to your template, they are not part of the main template parameters (below)
 			$this->template_parameters['session'] = $this->session;
@@ -144,6 +153,7 @@ class Controller_CL4_Base extends Controller_Template {
 			// set up the main template parameters
 			$this->template->session = $this->session; // for debug purposes anyway
 
+			// todo: 20140725 CSN take this out...
 			$this->template_parameters['button_default_attributes'] = array(
 				'data-role' => 'button',
 				'data-mini' => 'true',
@@ -214,6 +224,8 @@ class Controller_CL4_Base extends Controller_Template {
 			}
 
 			$this->template->on_load_js = $this->on_load_js;
+
+			$this->template->styles = $this->styles;
 
 			// look for any status message and display
 			if ($this->display_messages) {
