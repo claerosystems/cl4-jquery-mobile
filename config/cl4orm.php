@@ -11,7 +11,20 @@ return array(
                 'data-mini' => 'true',
             ),
         ),
+		'Phone' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
+		),
+		'Money' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
+		),
         'Select' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_options' => array(
                 // data to get the data to display in this field
                 'source' => array(
@@ -34,6 +47,9 @@ return array(
             ),
         ),
         'Radios' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_options' => array(
                 'default_value' => 0,
                 // see how to use these in the select defaults
@@ -47,22 +63,34 @@ return array(
             ),
         ),
         'Yes_No' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_options' => array(
                 'default_value' => 0,
             ),
         ),
         'Gender' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_options' => array(
                 'default_value' => 0,
             ),
         ),
         'TextArea' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array(
                 'cols' => 100,   // the number of columns in a text area
                 'rows' => 5,     // the number of rows in a text area
             ),
         ),
         'Date' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array( //
                 'maxlength' => 10,       // a date in the format YYYY-MM-DD
                 'size' => 10,
@@ -70,6 +98,9 @@ return array(
             ),
         ),
         'DateTime' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array( // only applies to the date field
                 'maxlength' => 10,       // a date in the format YYYY-MM-DD
                 'size' => 10,
@@ -77,6 +108,9 @@ return array(
             ),
         ),
         'File' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array(
                 'size' => 30,
                 'data-mini' => 'true',
@@ -88,6 +122,9 @@ return array(
             ),
         ),
         'URL' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array(
                 'maxlength' => 255,
                 'size' => 30,
@@ -95,6 +132,9 @@ return array(
             ),
         ),
         'Email' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array(
                 'maxlength' => 255,
                 'size' => 30,
@@ -102,6 +142,9 @@ return array(
             ),
         ),
         'Password' => array(
+			'field_attributes' => array(
+				'data-mini' => 'true',
+			),
             'field_attributes' => array(
                 'maxlength' => 255,
                 'size' => 30,
