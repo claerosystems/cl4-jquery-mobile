@@ -170,6 +170,9 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		if ( ! empty($_POST)) {
 			$this->save_model();
+
+			// redirect to index
+			$this->redirect_to_index();
 		}
 
 		$view_title = $this->get_page_title_message('adding_item');
@@ -177,6 +180,9 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		// display the edit form
 		$form_options = array(
 			'mode' => 'add',
+			'form_attributes' => array(
+				'data-ajax' => 'false'
+			)
 		);
 		if ( ! empty($this->id)) {
 			// set the form action because the current url includes the id of the record which will cause an update, not an add
@@ -198,12 +204,18 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		if ( ! empty($_POST)) {
 			$this->save_model();
+
+			// redirect to index
+			$this->redirect_to_index();
 		}
 
 		$this->set_page_title('Edit');
 		$view_title = $this->get_page_title_message('editing_item');
 		$view_content = $this->target_object->get_form(array(
 			'mode' => 'edit',
+			'form_attributes' => array(
+				'data-ajax' => 'false'
+			)
 		));
 		$this->add_admin_view($view_title, $view_content);
 	} // function action_edit
@@ -794,7 +806,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 
 		} catch (Exception $e) {
 			// display the error message
-			Kohana_Exception::handler_continue($e);
+			Kohana_Exception::handler($e);
 			Message::message('cl4admin', 'problem_loading_data', NULL, Message::$error);
 			Message::message('cl4admin', 'problem_loading_model', array(':model_name' => $this->model_name), Message::$debug);
 
