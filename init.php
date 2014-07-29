@@ -54,7 +54,7 @@ if ($routes['model_create']) {
 if ($routes['ajax']) {
 	Route::set('ajax', '(<lang>/)ajax/<action>(/<id>)', array(
 		'lang' => $lang_options,
-		'action' => '(check_login|set_smart_parameter|get_smart_parameter)'
+		'action' => '[a-z_]+',
 	))->defaults(array(
 			'controller' => 'ajax',
 			'lang' => DEFAULT_LANG,
