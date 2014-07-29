@@ -21,7 +21,7 @@ class CL4_ORM_Suggest extends CL4_ORM_Text {
 			$value_text = '';
 		}
 
-		return Form::suggest($html_name, $value, $value_text, $orm_model->object_name(), $column_name, $attributes);
+		return Form::suggest($html_name, $value, $value_text, $orm_model->object_name(), $column_name, $attributes, array(), $orm_model);
 	}
 
 	public static function save($post, $column_name, array $options = array(), ORM $orm_model = NULL) {

@@ -247,7 +247,7 @@ class Form extends CL4_Form {
 	 * @param array $options
 	 * @return string
 	 */
-	public static function suggest($name, $value_id = FALSE, $value_name = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array()) {
+	public static function suggest($name, $value_id = FALSE, $value_name = NULL, $model_name, $column_name, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
 		$html = '';
 
 		$default_options = array(
@@ -258,6 +258,8 @@ class Form extends CL4_Form {
 		$attributes += array(
 			'data-model_name' => $model_name,
 			'data-column_name' => $column_name,
+			'data-row_number' => $orm_model->record_number(),
+			'data-field_prefix' => $orm_model->get_option('field_name_prefix'),
 			'data-value' => $value_id,
 			//'data-role' => 'listview',
 			'data-inset' => 'true',
@@ -266,7 +268,7 @@ class Form extends CL4_Form {
 			//'data-filter-placeholder' => __('Enter search text...'),
 			//'data-filter-theme' => 'c',
 			'autocomplete' => 'off',
-			'id' => 'value_for_' . $model_name . '_' . $column_name,
+			'id' => 'value_for_' . $orm_model->get_field_id($column_name),
 		);
 
 		$attributes = HTML::set_class_attribute($attributes, 'js_cl4_suggest');
@@ -274,10 +276,10 @@ class Form extends CL4_Form {
 		// add the search field / results list
 		//$html .= '<ul' . HTML::attributes($attributes) . '></ul>';
 
-		$html .= Form::input('name_for_' . $model_name . '_' . $column_name, $value_name, $attributes);
+		$html .= Form::input('name_for_' . $orm_model->get_field_id($column_name), $value_name, $attributes);
 
 		// add the selected values ID field - used for saving and searching
-		$html .= Form::hidden($name, $value_id, array('id' => 'id_for_' . $model_name . '_' . $column_name));
+		$html .= Form::hidden($name, $value_id, array('id' => 'id_for_' . $orm_model->get_field_id($column_name)));
 
 /*
 		$html .= Form::input($name, $value_text, $attributes);
@@ -286,7 +288,7 @@ class Form extends CL4_Form {
 		$html .= Form::hidden('id_for_' . $model_name . '_' . $column_name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
 */
 		// add list view for searching
-		$html .= '<ul id="ajax_search_' . $column_name . '" data-role="listview" data-inset="true"></ul>';
+		$html .= '<ul id="ajax_search_for_' . $orm_model->get_field_id($column_name) . '" data-role="listview" data-inset="true"></ul>';
 
 		return $html;
 	}
