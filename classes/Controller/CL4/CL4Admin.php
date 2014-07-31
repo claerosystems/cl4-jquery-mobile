@@ -142,27 +142,6 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	} // function before
 
 	/**
-	* The default action
-	* Just displays the editable list using display_editable_list()
-	*/
-	public function action_index() {
-		$this->model_display_name = $this->get_model_display_name(ORM::factory($this->model_name));
-		$this->set_page_title();
-
-		$this->display_editable_list($this->override_list_options);
-	}
-
-	/**
-	* Cancel the current action by redirecting back to the index action
-	*/
-	public function action_cancel() {
-		// add a notice to be displayed
-		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
-		// redirect to the index
-		$this->redirect_to_index();
-	} // function
-
-	/**
 	* Display an add form or add (save) a new record
 	*/
 	public function action_add() {
@@ -260,6 +239,16 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		$this->set_page_title('Add');
 		$this->add_admin_view($view_title, $view_content);
 	} // function action_add_multiple
+
+	/**
+	 * Cancel the current action by redirecting back to the index action
+	 */
+	public function action_cancel() {
+		// add a notice to be displayed
+		Message::message('cl4admin', 'action_cancelled', NULL, Message::$notice);
+		// redirect to the index
+		$this->redirect_to_index();
+	} // function
 
 	/**
 	 * Clears the search from the session and redirects the user to the index page for the model
@@ -424,9 +413,15 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		}
 	} // function action_export
 
-	public static function lookup_filter($value) {
-		$search_text = CL4::get_param('q', NULL, 'string');
-		if (substr_count($value, $search_text) > 0) return TRUE;
+	/**
+	 * The default action
+	 * Just displays the editable list using display_editable_list()
+	 */
+	public function action_index() {
+		$this->model_display_name = $this->get_model_display_name(ORM::factory($this->model_name));
+		$this->set_page_title();
+
+		$this->display_editable_list($this->override_list_options);
 	}
 
 	/**
@@ -824,16 +819,10 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		} // try
 	} // function load_model
 
-	/**
-	 * Sets the page title on the template.
-	 * Standard format is: [action] - [model display name] - Administration - [site long name]
-	 *
-	 * @param  string  $action  The page title.
-	 * @return void
-	 */
-	protected function set_page_title($action = NULL) {
-		$this->template->page_name = strtolower($action) . '-' . strtolower($this->model_name);
-		$this->template->page_title = ( ! empty($action) ? $action . ' - ' : '') . $this->model_display_name . ' - Administration';
+
+	public static function lookup_filter($value) {
+		$search_text = CL4::get_param('q', NULL, 'string');
+		if (substr_count($value, $search_text) > 0) return TRUE;
 	}
 
 	/**
@@ -867,6 +856,18 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			), Message::$error);
 		}
 	} // function save_model
+
+	/**
+	 * Sets the page title on the template.
+	 * Standard format is: [action] - [model display name] - Administration - [site long name]
+	 *
+	 * @param  string  $action  The page title.
+	 * @return void
+	 */
+	protected function set_page_title($action = NULL) {
+		$this->template->page_name = strtolower($action) . '-' . strtolower($this->model_name);
+		$this->template->page_title = ( ! empty($action) ? $action . ' - ' : '') . $this->model_display_name . ' - Administration';
+	}
 
 	/**
 	 * Sets the values in the model_session to the values in the controller properties.
