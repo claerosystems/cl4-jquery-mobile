@@ -460,8 +460,10 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 				}
 			}
 
-			foreach($options['and_where'] as $and_where) {
-				$query->and_where($and_where[0], $and_where[1], $and_where[2]);
+			if ( ! empty($options['and_where']) && is_array($options['and_where'])) {
+				foreach($options['and_where'] as $and_where) {
+					$query->and_where($and_where[0], $and_where[1], $and_where[2]);
+				}
 			}
 
 			$query->and_where_open();
