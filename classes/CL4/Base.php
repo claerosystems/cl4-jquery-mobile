@@ -368,9 +368,58 @@ class CL4_Base {
 		}
 	}
 
+	public static function get_suggest_query($object, $column_name, $search_text, $value = NULL) {
+		$query = FALSE;
+
+		$options = $object->get_meta_data($column_name)['field_options']['source'];
+		if ($options['source'] == 'sql') {
+			if (empty($options['override_query_function'])) {
+				$query = DB::select(
+					array(DB::expr($options['id_field'][0]), $options['id_field'][1]),
+					array(DB::expr($options['name_field'][0]), $options['name_field'][1])
+				);
+
+				$query->from($options['from_table']);
+
+				if ( ! empty($options['join_table'])) {
+					$query->join($options['join_table']);
+					if ( ! empty($options['on']) && is_array($options['on'])) {
+						$query->on($options['on'][0], $options['on'][1], $options['on'][2]);
+					}
+				}
+
+				if ( ! empty($options['and_where']) && is_array($options['and_where'])) {
+					foreach($options['and_where'] as $and_where) {
+						$query->and_where($and_where[0], $and_where[1], $and_where[2]);
+					}
+				}
+
+				$query->and_where_open();
+				foreach($options['search_columns'] as $search_column) {
+					$query->or_where($search_column, 'LIKE', "%{$search_text}%");
+				}
+				$query->and_where_close();
+
+				if ( ! empty($value)) {
+					$query->and_where(DB::expr($options['id_field'][0]), '=', $value);
+				}
+
+				$query->order_by($options['order_by'], 'ASC');
+
+				$query->limit($options['limit']);
+			} else {
+				$query = call_user_func($options['override_query_function'], $search_text);
+			}
+		}
+		//echo (string) $query;exit;
+
+		return $query;
+	}
+
 	public static function get_url($route, $params = array()) {
 		return URL_ROOT . '/' . Route::get($route)->uri($params);
 	}
+
 	/**
 	 * return the localized view based on i18n::lang()
 	 */

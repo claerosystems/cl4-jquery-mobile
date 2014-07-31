@@ -5,18 +5,16 @@ class CL4_ORM_Suggest extends CL4_ORM_Text {
 
 		// need to get the selected value if there is one
 		if ($value > 0) {
+
 			$options = $orm_model->get_meta_data($column_name)['field_options']['source'];
 			$name_field_name = $options['name_field'][1];
-			$data = DB::select(
-					array(DB::expr($options['id_field'][0]), $options['id_field'][1]),
-					array(DB::expr($options['name_field'][0]), $options['name_field'][1])
-				)
-				->from($options['from_table'])
-				->where($options['id_field'][0], '=', $value)
-				->limit(1)
-				->execute()
-				->as_array();
-			$value_text = $data[0][$name_field_name];
+
+			$query = Base::get_suggest_query($orm_model, $column_name, NULL, $value);
+
+			if ($query !== FALSE) {
+				$data = $query->execute()->as_array();
+				$value_text = ( ! empty($data[0][$name_field_name])) ? $data[0][$name_field_name] : NULL;
+			}
 		} else {
 			$value_text = '';
 		}
