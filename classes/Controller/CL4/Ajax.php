@@ -111,38 +111,4 @@ class Controller_CL4_Ajax extends Controller_Base {
 		}
 		$this->action_after();
 	}
-
-	public function action_toggle_flag() {
-		if (Auth::instance()->logged_in()) {
-			$object_name = CL4::get_param('object_name', NULL);
-			$column_name = CL4::get_param('column_name', NULL);
-			$row_id = Kohana_Request::$current->param('id');
-
-			$this->status = 0;
-
-			if (in_array($object_name, array('Private_Order_Qc', 'Private_Order_On', 'Private_Order_Inventory'))) {
-				$object = ORM::factory($object_name, $row_id);
-				if ($object->loaded()) {
-					if (in_array($column_name, array('email_sent_flag', 'saq_conf_flag', 'pick_sent_flag', 'invoiced_flag'))) {
-						// toggle the column value
-						$object->$column_name = ($object->$column_name == 1) ? 0 : 1;
-						if ($object->save() !== false) {
-							$this->html = "This action has been completed.";
-							$this->output['value'] = $object->$column_name;
-							$this->status = 1;
-						} else {
-							$this->html = "failed to save the object in ajax toggle_flag() : {$object_name} {$column_name} {$row_id}";
-						}
-					} else {
-						$this->html = 'invalid column name in ajax toggle_flag(), please add ' . $column_name . ' to the list of allowed columns';
-					}
-				} else {
-					$this->html = "failed to load the object in ajax toggle_flag() : {$object_name} {$column_name} {$row_id}";
-				}
-			} else {
-				$this->html = 'invalid object name in ajax toggle_flag(), please add ' . $object_name . ' to the list of allowed objects';
-			}
-		}
-		$this->action_after();
-	}
 }
