@@ -408,7 +408,7 @@ class CL4_Base {
 
 				$query->limit($options['limit']);
 			} else {
-				$query = call_user_func($options['override_query_function'], $search_text);
+				$query = call_user_func($options['override_query_function'], $search_text, $value);
 			}
 		}
 		//echo (string) $query;exit;
