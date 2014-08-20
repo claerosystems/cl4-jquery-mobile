@@ -288,7 +288,7 @@ class Form extends CL4_Form {
 		$html .= Form::hidden('id_for_' . $model_name . '_' . $column_name, $value, array('id' => 'id_for_' . $model_name . '_' . $column_name));
 */
 		// add list view for searching
-		$html .= '<ul id="ajax_search_for_' . $orm_model->get_field_id($column_name) . '" data-role="listview" data-inset="true"></ul>';
+		$html .= '<ul id="ajax_search_for_' . $orm_model->get_field_id($column_name) . '" style="display:none;" data-role="listview" data-inset="true"></ul>';
 
 		return $html;
 	}

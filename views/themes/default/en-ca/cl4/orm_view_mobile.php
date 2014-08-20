@@ -24,5 +24,5 @@ if ($any_visible) { ?>
 }
 
 if ($form_options['display_buttons']) {
-	echo '<div data-role="controlgroup" data-type="horizontal" class="cl4_buttons">' . implode('', $form_buttons) . '</div>';
+	echo '<div data-role="controlgroup" data-type="horizontal">' . implode('', $form_buttons) . '</div>';
 }

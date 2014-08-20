@@ -78,10 +78,11 @@ class Controller_CL4_Account extends Controller_Private {
 		));
 
 		// prepare the view & form
-		$this->template->body_html = View::factory('cl4/cl4account/profile')
+		$this->template->body_html = Base::get_view('cl4/cl4account/profile')
 			->set('edit_fields', $model->get_form(array(
 				'form_action' => Base::get_url(Route::name($this->request->route()), array('action' => 'profile')),
 				'form_id' => 'editprofile',
+				'get_form_view_file' => 'cl4/orm_form_mobile_2',
 			)));
 	} // function action_profile
 

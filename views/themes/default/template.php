@@ -35,19 +35,19 @@
 
 	<?php //<link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'> ?>
 
-	<?php if (1 || DEVELOPMENT_FLAG) { ?>
-		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-		<!--<script src="//code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
-		<script src="/cl4/js/vendor/jquery-2.1.0.min.js"></script>
-		<script src="/cl4/js/vendor/jquery.mobile-1.4.2.js"></script>
+	<?php if (DEVELOPMENT_FLAG) { ?>
+		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile-1.4.3.js"></script>
 		<script src="/cl4/js/vendor/datepicker.js"></script>
 		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
-		<?php /* <script src="/cl4/js/vendor/jquery.currency.js"></script> */ ?>
 		<script src="/cl4/js/base.js"></script>
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
-		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-		<!--<script src="//code.jquery.com/mobile/1.4.0/jquery.mobile-1.4.0.min.js"></script>-->
+		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile-1.4.3.min.js"></script>
+		<script src="/cl4/js/vendor/datepicker.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
+		<script src="/cl4/js/base.js"></script>
 	<?php } ?>
 	<?php if ( ! empty($custom_js)) { ?>
 		<?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '"></script>'; ?>
