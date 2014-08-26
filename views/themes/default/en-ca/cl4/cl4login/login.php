@@ -6,7 +6,7 @@
 
 	<div data-role="fieldcontain" class="ui-hide-label">
 		<label for="username">Username</label>
-		<input type="email" data-clear-btn="true" name="username" id="username" value="<?php echo $default_username; ?>" placeholder="Username" autocapitalize="off"<?php if (empty($default_username)) echo ' autofocus'; ?>>
+		<input type="email" data-clear-btn="false" name="username" id="username" value="<?php echo $default_username; ?>" placeholder="Username" autocapitalize="off"<?php if (empty($default_username)) echo ' autofocus'; ?>>
 	</div>
 
 	<div data-role="fieldcontain" class="ui-hide-label">
