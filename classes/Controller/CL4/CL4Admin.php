@@ -151,7 +151,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 			$this->save_model();
 
 			// redirect to index
-			$this->redirect_to_index();
+			// 20140822 CSN but if validation fails, we don't want to redirect? $this->redirect_to_index();
 		}
 
 		$view_title = $this->get_page_title_message('adding_item');
@@ -181,11 +181,13 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	public function action_edit() {
 		$this->load_model('edit');
 
+		//echo Debug::vars($this->target_object);exit;
+
 		if ( ! empty($_POST)) {
 			$this->save_model();
 
 			// redirect to index
-			$this->redirect_to_index();
+			// 20140822 CSN but if validation fails, we don't want to redirect? $this->redirect_to_index();
 		}
 
 		$this->set_page_title('Edit');
@@ -746,8 +748,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	function redirect_to_index() {
 		$this->set_session();
 		//$this->redirect('/' . Route::get(Route::name($this->request->route()))->uri(array('model' => $this->model_name, 'action' => 'index')));
-		//$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
-		$this->redirect(Base::get_url(Route::name($this->request->route()), array('prov' => $this->prov, 'model' => $this->model_name, 'action' => 'index')));
+		$this->redirect(Base::get_url('cl4admin', array('model' => $this->model_name, 'action' => 'index')));
+		//$this->redirect(Base::get_url(Route::name($this->request->route()), array('prov' => $this->prov, 'model' => $this->model_name, 'action' => 'index')));
 	}
 
 	/**
