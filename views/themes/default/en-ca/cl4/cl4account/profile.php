@@ -10,7 +10,7 @@
 		<div class="ui-body ui-body-d">
 			<h2>Change Password</h2>
 
-			<?php echo Form::open(URL::site(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'password'))));
+			<?php echo Form::open(Base::get_url(Route::name(Request::current()->route()), array('action' => 'password')));
 			echo Form::hidden('form', 'password');
 			?>
 
