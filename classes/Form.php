@@ -84,7 +84,7 @@ class Form extends CL4_Form {
 		// get the default values for the form fields
 		$default_data = CL4::parse_phone_value($value);
 
-		$html = '<div class="phone_grid">';
+		$html = '<div class="phone_grid clearfix">';
 
 		// add the country code
 		$_attributes = $attributes;
