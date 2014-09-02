@@ -53,7 +53,7 @@ class Controller_CL4_Account extends Controller_Private {
 				// save first, so that the model has an id when the relationships are added
 				$model->save();
 				// message: profile saved
-				Message::add(__(Kohana::message('account', 'profile_saved')), Message::$notice);
+				Base::message('account', 'profile_saved', NULL, Message::$notice);
 
 				// reload the user in the session
 				Auth::instance()->get_user()->reload();
@@ -63,7 +63,7 @@ class Controller_CL4_Account extends Controller_Private {
 				$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 
 			} catch (ORM_Validation_Exception $e) {
-				Message::message('account', 'profile_save_validation', array(
+				Base::message('account', 'profile_save_validation', array(
 					':validation_errors' => Message::add_validation_errors($model->validation(), 'user')
 				), Message::$error);
 			}
@@ -137,7 +137,8 @@ class Controller_CL4_Account extends Controller_Private {
 					))
 					->save();
 
-				Message::add(__(Kohana::message('account', 'password_changed')), Message::$notice);
+				//Message::add(__(Kohana::message('account', 'password_changed')), Message::$notice);
+				Base::message('account', 'password_changed', NULL, Message::$notice);
 
 				// reload the user in the session
 				Auth::instance()->get_user()->reload();
@@ -147,7 +148,9 @@ class Controller_CL4_Account extends Controller_Private {
 				$this->redirect(Base::get_url(Route::name($this->request->route()), array('action' => 'profile')));
 
 			} else {
+				Base::message('account', 'password_change_validation', NULL, Message::$error);
 				Message::add(__(Kohana::message('account', 'password_change_validation')) . Message::add_validation_errors($validation, 'account'), Message::$error);
+
 			}
 		} // if
 
