@@ -35,7 +35,7 @@ class Controller_CL4_Private extends Controller_Base {
 				$this->template->avatar = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->session['auth_user']->username))) . "?s=" . 41; // "?d=" . urlencode(URL_ROOT . '/images/loading.gif') .
 			}
 
-			$this->template->panel_html = Base::get_view('panel/admin')->render();
+			$this->template->panel_html = Base::get_view('panel/admin', array('user' => $this->user))->render();
 		}
 	}
 
