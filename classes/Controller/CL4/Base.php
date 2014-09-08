@@ -131,7 +131,11 @@ class Controller_CL4_Base extends Controller_Template {
 
 		// if the site is unavailable, redirect the user to the unavailable page
 		if (defined('UNAVAILABLE_FLAG') && UNAVAILABLE_FLAG) {
-			throw HTTP_Exception_503::factory(503, __('The site is currently unavailable.'));
+			$msg = (defined('UNAVAILABLE_MESSAGE')) ? UNAVAILABLE_MESSAGE : 'The site is currently unavailable.';
+			echo __($msg);
+			exit;
+
+			throw HTTP_Exception_503::factory(503, __($msg));
 		}
 
 		$this->check_login();
