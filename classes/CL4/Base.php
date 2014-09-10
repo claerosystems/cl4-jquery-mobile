@@ -91,7 +91,7 @@ class CL4_Base {
 			// truncate
 			$return_string = '';
 			$return_string .= ($html_flag) ? '<span class="description" title="' . htmlentities($description) . '">' : '';
-			$return_string .= htmlentities(substr($description, 0, $max_length) . '...');
+			$return_string .= htmlentities(mb_substr($description, 0, $max_length) . '...');
 			$return_string .= ($html_flag) ? '</span>' : '';
 		} else {
 			$return_string = htmlentities($description);
