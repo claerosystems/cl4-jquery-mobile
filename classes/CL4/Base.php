@@ -8,6 +8,15 @@
  */
 class CL4_Base {
 	/**
+	 * Prepare a string to be inserted in to a .csv file.
+	 *
+	 * @param $text
+	 *
+	 */
+	public static function clean_for_csv($text) {
+
+	}
+	/**
 	 * Attempt to convert the given phone number in to the standard cl4 format, which is x-xxx-xxx-xxxx-xx
 	 * @param $phone_number
 	 *
@@ -100,8 +109,8 @@ class CL4_Base {
 		return $return_string;
 	}
 
-	public static function format_money($amount) {
-		return '$' . number_format($amount, 2);
+	public static function format_money($amount, $decimals = 2) {
+		return (is_numeric($amount)) ? '$' . number_format($amount, $decimals) : $amount;
 	}
 
 	/**
@@ -310,7 +319,7 @@ class CL4_Base {
 	 * Check for a parameter with the given key in the request data, POST overrides Request ovverides GET
 	 * in this case empty values are returned as they were found, in other words '' and zero will work (unlike CL4::get_param)
 	 *
-	 * @param  string  the key of the paramter
+	 * @param  string  the key of the parameter
 	 * @param  mixed  the default value
 	 * @param  string  used for type casting, can be 'int', 'string' or 'array'
 	 * @return  mixed  the value of the parameter, or $default, or null
@@ -345,24 +354,24 @@ class CL4_Base {
 		$session =& Session::instance()->as_array();
 		$source = $session['auth_user'];
 
-		$parameter_value = Base::get_param($parameter_name, $default, $type);
+		$parameter_value = Base::get_param($parameter_name, NULL, $type);
 		if ($parameter_value !== NULL) {
 			// save and return the new setting
 			$source->setting($parameter_name, $parameter_value);
-			//echo "<p>found and set parameter ($parameter_name, $parameter_value)</p>";
+			echo "<p>found and set parameter ($parameter_name, $parameter_value)</p>";
 			return $parameter_value;
 		} else {
 			// try to use the saved setting if one exists, otherwise use the default
 			$saved_value = $source->setting($parameter_name);
 			if ( ! empty($saved_value)) {
-				//echo "<p>found saved value ($parameter_name, $saved_value)</p>";
+				echo "<p>found saved value ($parameter_name, $saved_value)</p>";
 				return $saved_value;
 			} else {
 				// save and return the default setting (should only ever happen the first time this setting is requested for this user/company)
 				// use the default from the conf file if one is not passed
 				if (empty($default)) $default = Kohana::$config->load("base.user_setting_default.{$parameter_name}");
 				$source->setting($parameter_name, $default);
-				//echo "<p>set and return default value ($parameter_name, $default)</p>";
+				echo "<p>set and return default value ($parameter_name, $default)</p>";
 				return $default;
 			}
 		}
@@ -452,7 +461,7 @@ class CL4_Base {
 	}
 
 	/**
-	 * Attempt to remove the accents from the given string.
+	 * Attempt to remove the accents from the given string.  Also replaces ',', ' ', etc.
 	 *
 	 * @param $toClean
 	 *
