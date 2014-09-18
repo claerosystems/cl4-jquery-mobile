@@ -55,6 +55,8 @@
 
 	<?php if (0) echo '<script src="/cl4/js/model_create.js"></script>'; ?>
 
+	<?php if ( ! empty($extra_head_html)) echo $extra_head_html; ?>
+
 	<script>var cl4_in_debug = <?php echo (int) DEBUG_FLAG; ?>;</script>
 </head>
 <body class="<?php echo HTML::chars(trim($body_class)); ?>">
