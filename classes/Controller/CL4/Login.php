@@ -251,10 +251,10 @@ class Controller_CL4_Login extends Controller_Base {
 
 		// Get number of login attempts this session
 		$attempts = Arr::path($this->session, $login_config['session_key'] . '.attempts', 0);
-		$force_captcha = Arr::path($this->session, $login_config['session_key'] . '.force_captcha', FALSE);
+		$force_captcha = FALSE; //Arr::path($this->session, $login_config['session_key'] . '.force_captcha', FALSE);
 
 		// If more than three login attempts, add a captcha to form
-		$captcha_required = ($force_captcha || $attempts > $login_config['failed_login_captcha_display']);
+		$captcha_required = FALSE; // ($force_captcha || $attempts > $login_config['failed_login_captcha_display']);
 
 		// Update number of login attempts
 		++$attempts;
@@ -268,7 +268,7 @@ class Controller_CL4_Login extends Controller_Base {
 		try {
 			// $_POST is not empty
 			if ( ! empty($_POST)) {
-				$human_verified = FALSE;
+				$human_verified = TRUE;
 				$captcha_received = FALSE;
 
 				// If recaptcha was set and is required
@@ -338,27 +338,14 @@ class Controller_CL4_Login extends Controller_Base {
 
 					// If login failed (captcha and/or wrong credentials)
 				} else {
-					// force captcha may have changed within Auth::login()
-					$force_captcha = Arr::path($this->session, $login_config['session_key'] . '.force_captcha', FALSE);
-					if ( ! $captcha_required && $force_captcha) {
-						$captcha_required = TRUE;
-					}
-
 					if ( ! empty($login_messages)) {
 						foreach ($login_messages as $message_data) {
 							list($message, $values) = $message_data;
 							Message::message('user', $message, $values, Message::$error);
 						}
 					}
-
-					// determine if we should be displaying a recaptcha message
-					if ( ! $human_verified && $captcha_received) {
-						Message::message('user', 'recaptcha_not_valid', array(), Message::$error);
-					} else if ($captcha_required && ! $captcha_received) {
-						Message::message('user', 'enter_recaptcha', array(), Message::$error);
-					}
-				} // if
-			} // if $_POST
+				}
+			}
 		} catch (ORM_Validation_Exception $e) {
 			Message::message('user', 'username.invalid');
 		}
