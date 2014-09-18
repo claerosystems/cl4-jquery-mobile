@@ -89,6 +89,12 @@ class Controller_CL4_Ajax extends Controller_Base {
 		$this->action_after();
 	}
 
+	public function action_get_messages() {
+		$this->html = Message::display();
+		$this->status = 1;
+		$this->action_after();
+	}
+
 	/**
 	 * get / set a user or company setting via ajax
 	 */
