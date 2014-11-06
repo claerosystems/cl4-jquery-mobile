@@ -37,14 +37,14 @@
 
 	<?php if (DEVELOPMENT_FLAG) { ?>
 		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
-		<script src="/cl4/js/vendor/jquery.mobile-1.4.3.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile-1.4.5.js"></script>
 		<script src="/cl4/js/vendor/datepicker.js"></script>
 		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
 		<script src="/cl4/js/base.js"></script>
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
 		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
-		<script src="/cl4/js/vendor/jquery.mobile-1.4.3.min.js"></script>
+		<script src="/cl4/js/vendor/jquery.mobile-1.4.5.min.js"></script>
 		<script src="/cl4/js/vendor/datepicker.js"></script>
 		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
 		<script src="/cl4/js/base.js"></script>
