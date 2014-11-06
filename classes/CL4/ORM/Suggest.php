@@ -2,10 +2,8 @@
 
 class CL4_ORM_Suggest extends CL4_ORM_Text {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
-
 		// need to get the selected value if there is one
 		if ($value > 0) {
-
 			$options = $orm_model->get_meta_data($column_name)['field_options']['source'];
 			$name_field_name = $options['name_field'][1];
 

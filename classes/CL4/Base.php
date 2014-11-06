@@ -358,20 +358,20 @@ class CL4_Base {
 		if ($parameter_value !== NULL) {
 			// save and return the new setting
 			$source->setting($parameter_name, $parameter_value);
-			echo "<p>found and set parameter ($parameter_name, $parameter_value)</p>";
+			//echo "<p>found and set parameter ($parameter_name, $parameter_value)</p>";
 			return $parameter_value;
 		} else {
 			// try to use the saved setting if one exists, otherwise use the default
 			$saved_value = $source->setting($parameter_name);
 			if ( ! empty($saved_value)) {
-				echo "<p>found saved value ($parameter_name, $saved_value)</p>";
+				//echo "<p>found saved value ($parameter_name, $saved_value)</p>";
 				return $saved_value;
 			} else {
 				// save and return the default setting (should only ever happen the first time this setting is requested for this user/company)
 				// use the default from the conf file if one is not passed
 				if (empty($default)) $default = Kohana::$config->load("base.user_setting_default.{$parameter_name}");
 				$source->setting($parameter_name, $default);
-				echo "<p>set and return default value ($parameter_name, $default)</p>";
+				//echo "<p>set and return default value ($parameter_name, $default)</p>";
 				return $default;
 			}
 		}
@@ -701,7 +701,8 @@ class CL4_Base {
 	 * @param        $value
 	 * @param string $type
 	 */
-	public static function set_smart_parameter($parameter_name, $value, $type = 'user') {$session =& Session::instance()->as_array();
+	public static function set_smart_parameter($parameter_name, $value, $type = 'user') {
+		$session =& Session::instance()->as_array();
 		if ($type == 'user') {
 			$source = $session['auth_user'];
 		} else if ($type == 'company') {
