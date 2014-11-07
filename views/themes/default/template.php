@@ -116,8 +116,6 @@
 <script>
 	$(function() {
 		<?php echo ( ! empty($on_load_js)) ? $on_load_js . EOL : ''; ?>
-
-		//$('.cl4_money').currency();
 	});
 </script>
 
@@ -134,5 +132,10 @@
 <?php } ?>
 
 <a name="template_bottom"></a>
+<div class="ui-loader ui-corner-all ui-body-a ui-loader-default" style="display: hidden;">
+ <span class="ui-icon ui-icon-loading">
+ </span>
+	<h1>Loading, please wait.</h1>
+</div>
 </body>
 </html>
