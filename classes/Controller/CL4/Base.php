@@ -227,7 +227,7 @@ class Controller_CL4_Base extends Controller_Template {
 				$this->template->body_class .= ' p_' . $this->page;
 			}
 
-			$this->template->on_load_js = $this->on_load_js;
+			//$this->template->on_load_js = $this->on_load_js;
 
 			$this->template->styles = $this->styles;
 
