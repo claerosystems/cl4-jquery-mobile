@@ -59,7 +59,7 @@
 
 	<script>var cl4_in_debug = <?php echo (int) DEBUG_FLAG; ?>;</script>
 </head>
-<body class="<?php echo HTML::chars(trim($body_class)); ?>">
+<body class="<?php echo HTML::chars(trim($body_class)); ?>" data-provincecode="<?php echo PROVINCE_CODE; ?>" data-route="<?php echo $route_name; ?>" data-baseurl="<?php echo Base::get_url($route_name); ?>">
 <a name="wc_top"></a>
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -132,10 +132,5 @@
 <?php } ?>
 
 <a name="template_bottom"></a>
-<div class="ui-loader ui-corner-all ui-body-a ui-loader-default" style="display: hidden;">
- <span class="ui-icon ui-icon-loading">
- </span>
-	<h1>Loading, please wait.</h1>
-</div>
 </body>
 </html>
