@@ -260,14 +260,14 @@ class Model_CL4_User extends Model_Auth_User {
 	} // function _build
 
 	/**
-	* Add an auth log
-	* If the model is loaded, it will use the relationship to the model
-	* If the model is not loaded, it will create a new auth_log model
-	*
-	* @param   int    $auth_type  The auth type id
-	* @param   mixed  $username   The username, if loaded, this will be replaced with the current model's username
-	* @return  ORM
-	*/
+	 * Add an auth log
+	 * If the model is loaded, it will use the relationship to the model
+	 * If the model is not loaded, it will create a new auth_log model
+	 *
+	 * @param   int    $auth_type  The auth type id
+	 * @param   mixed  $username   The username, if loaded, this will be replaced with the current model's username
+	 * @return  ORM
+	 */
 	public function add_auth_log($auth_type, $username = NULL) {
 		$auth_log_data = array(
 			'username' => ($username !== NULL ? $username : ''),
@@ -275,6 +275,8 @@ class Model_CL4_User extends Model_Auth_User {
 			'auth_type_id' => $auth_type,
 			'browser' => ( ! empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''),
 			'ip_address' => ( ! empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''),
+			//20141124 CSN add this to a background job, sometimes it takes too long?
+			'host_detected' => ( ! empty($_SERVER['REMOTE_ADDR']) ? gethostbyaddr($_SERVER['REMOTE_ADDR']) : ''),
 		);
 
 		if ($this->_loaded) {
@@ -285,8 +287,8 @@ class Model_CL4_User extends Model_Auth_User {
 		}
 
 		$auth_log = ORM::factory('Auth_Log')
-			->values($auth_log_data)
-			->save();
+		               ->values($auth_log_data)
+		               ->save();
 
 		return $this;
 	} // function add_auth_log
