@@ -1,5 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
+/**
+ * Class Model_CL4_Auth_Log
+ *
+ * sl log:
+ * 20141124 CSN ALTER TABLE `auth_log` ADD COLUMN `host_detected` varchar(255) AFTER `ip_address`;
+ *
+ */
 class Model_CL4_Auth_Log extends ORM {
 	protected $_table_names_plural = FALSE;
 	protected $_table_name = 'auth_log';
@@ -105,6 +112,10 @@ class Model_CL4_Auth_Log extends ORM {
 			'search_flag' => TRUE,
 			'view_flag' => TRUE,
 			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'size' => 45,
+				'maxlength' => 255,
+			),
 		),
 		'ip_address' => array(
 			'field_type' => 'Text',
@@ -115,7 +126,19 @@ class Model_CL4_Auth_Log extends ORM {
 			'is_nullable' => FALSE,
 			'field_attributes' => array(
 				'size' => 15,
-				'maxlength' => 15,
+				'maxlength' => 255,
+			),
+		),
+		'host_detected' => array(
+			'field_type' => 'Text',
+			'list_flag' => TRUE,
+			'edit_flag' => TRUE,
+			'search_flag' => TRUE,
+			'view_flag' => TRUE,
+			'is_nullable' => FALSE,
+			'field_attributes' => array(
+				'size' => 45,
+				'maxlength' => 255,
 			),
 		),
 	);
@@ -132,6 +155,7 @@ class Model_CL4_Auth_Log extends ORM {
 		50 => 'auth_type_id',
 		60 => 'browser',
 		70 => 'ip_address',
+		80 => 'host_detected',
 	);
 
 	/**
@@ -148,6 +172,7 @@ class Model_CL4_Auth_Log extends ORM {
 			'auth_type_id' => 'Auth Type',
 			'browser' => 'Browser',
 			'ip_address' => 'IP Address',
+			'host_detected' => 'Host',
 		);
 	}
 }
