@@ -294,6 +294,8 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		} else {
 			// the confirmation form goes in the messages
 			Message::add(Base::get_view('cl4/cl4admin/confirm_delete', array(
+				'model' => $this->model_name,
+				'id' => $this->id,
 				'object_name' => $this->model_display_name,
 			)));
 
