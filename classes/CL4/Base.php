@@ -443,6 +443,22 @@ class CL4_Base {
 	}
 
 	/**
+	 * Tries to identify if the given phone number has been entered or not.
+	 *
+	 * If it looks like the phone number is empty or invalid we return TRUE, otherwise FALSE
+	 *
+	 * @param $phone_number
+	 */
+	public static function is_phone_empty($phone_number) {
+		//if (empty($phone_number) || ($phone_number == '----') || ($phone_number == '1----') || (sizeof($phone_number) < 11)) {
+		if (strlen($phone_number) < 11) {
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
 	 * Adds a message using Kohana::message(), prepends the path with i18n::lang() . '/' and includes data merge
 	 * Saves doing this:
 	 *     Message::add(Kohana::message($file, i18n::lang() . '/' . $path), $data), $level);
