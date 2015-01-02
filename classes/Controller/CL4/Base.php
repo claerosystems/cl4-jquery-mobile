@@ -110,14 +110,14 @@ class Controller_CL4_Base extends Controller_Template {
 				setlocale(LC_TIME, 'fr_CA.utf8');
 				setlocale(LC_MESSAGES, 'fr_CA.utf8');
 				// create the switch language link
-				$language_switch_link = '<a href="/' . Base::get_url('public', array('lang' => 'en-ca')) . '">EN</a> / FR';
+				$language_switch_link = '<a href="/en">EN</a> / FR';
 				$date_input_options = "            format: 'dddd dd, mmmm yyyy'" . EOL;
 			} else {
 				// english, set the date
 				setlocale(LC_TIME, 'en_CA.utf8');
 				setlocale(LC_MESSAGES, 'en_CA.utf8');
 				// create the switch language link
-				$language_switch_link = 'EN / <a href="/' . Base::get_url('public', array('lang' => 'fr-ca')) . '">FR</a>';
+				$language_switch_link = 'EN / <a href="/fr">FR</a>';
 				$date_input_options = "            lang: 'fr', " . EOL; // defined in master js file, must execute before this does
 				$date_input_options .= "            format: 'dddd mmmm dd, yyyy'" . EOL;
 			} // if
