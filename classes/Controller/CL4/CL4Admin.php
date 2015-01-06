@@ -51,7 +51,7 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 		$this->session_key = Kohana::$config->load('cl4admin.session_key');
 
 		// set the information from the route/get/post parameters
-		$this->model_name = $this->request->param('model');
+		$this->model_name = (empty($this->model_name)) ? $this->request->param('model') : $this->model_name;
 		$this->id = $this->request->param('id');
 		$page_offset = CL4::get_param('page');
 		$sort_column = CL4::get_param('sort_by_column');
