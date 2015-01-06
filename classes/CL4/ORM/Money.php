@@ -6,8 +6,9 @@
  */
 class CL4_ORM_Money extends CL4_ORM_Text {
 	public static function edit($column_name, $html_name, $value, array $attributes = NULL, array $options = array(), ORM $orm_model = NULL) {
-		$attributes = array('class' => 'cl4_money');
-		return parent::edit($column_name, $html_name, number_format($value,2), $attributes, $options, $orm_model);
+		$attributes = array('class' => 'cl4_money', 'type' => 'number', 'step' => '0.01');
+		$value = ($value > 0) ? number_format($value,2) : '';
+		return parent::edit($column_name, $html_name, $value, $attributes, $options, $orm_model);
 	}
 
 	public static function save($post, $column_name, array $options = array(), ORM $orm_model = NULL) {
