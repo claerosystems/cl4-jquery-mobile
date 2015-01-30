@@ -109,6 +109,27 @@ class CL4_Base {
 		return $return_string;
 	}
 
+	/**
+	 * Return a formatted filesize.
+	 *
+	 * @param $bytes
+	 * @param int $dec
+	 * @return string
+	 */
+	public static function format_filesize($bytes, $dec = 2) {
+		$size   = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+		$factor = floor((strlen($bytes) - 1) / 3);
+
+		return sprintf("%.{$dec}f", $bytes / pow(1024, $factor)) . ' ' . @$size[$factor];
+	}
+
+	/**
+	 * Return a formatted dollar value from a decimal or integer.
+	 *
+	 * @param $amount
+	 * @param int $decimals
+	 * @return string
+	 */
 	public static function format_money($amount, $decimals = 2) {
 		return (is_numeric($amount)) ? '$' . number_format($amount, $decimals) : $amount;
 	}
