@@ -14,7 +14,7 @@ class Controller_CL4_Account extends Controller_Private {
 	);
 
 	/**
-	* By default go the profile
+	* By default go to the profile
 	* If the user is not logged in, this will then redirect to the login page
 	*/
 	public function action_index() {
