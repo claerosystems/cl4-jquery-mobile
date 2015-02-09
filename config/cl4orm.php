@@ -156,5 +156,17 @@ return array(
 		'replace_spaces' => TRUE,
 		'get_form_view_file' => 'cl4/orm_form_mobile', // the default view to use when displaying the edit or search form
 		'get_view_view_file' => 'cl4/orm_view_mobile', // the default view to use when displaying a view of a record
+
+
+        // the default options for the attributes of the form tag
+        'form_attributes' => array(
+            'enctype' => 'multipart/form-data', // todo: maybe only include this if a file type column is present?
+            'method' => 'post',
+            'name' => '', // empty string will default to table name
+            'id' => '', // empty string will default to table name
+            'class' => 'cl4_form',
+            'data-ajax' => 'false',
+            'data-mini' => 'true',
+        ),
 	),
 );
