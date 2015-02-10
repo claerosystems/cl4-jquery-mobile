@@ -65,6 +65,8 @@ class CL4_ORM_Select extends ORM_FieldType {
 
 		$sql_table_name = ORM_Select::get_sql_table_name($orm_model);
 
+		$value = array($value);
+
 		// nothing received or not an array or all is in the array so don't do anything with this field
 		if (empty($value) || ! is_array($value) || in_array('all', $value)) {
 			// don't do anything, default $methods array is good
