@@ -1,6 +1,7 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 class Controller_CL4_Ajax extends Controller_Base {
+	public $id = NULL;
 	public $action = NULL;
 	public $record_limit = NULL;
 	public $cascade_sql = FALSE;
@@ -13,6 +14,7 @@ class Controller_CL4_Ajax extends Controller_Base {
 		$this->auto_render = FALSE;
 
 		// process the request parameters
+		$this->id = CL4::get_param('id');
 		$this->action = CL4::get_param('action');
 		$this->record_limit = CL4::get_param('limit', 10);
 		$this->output_type = CL4::get_param('type', 'json'); // 'html', 'json', or 'xml' ?
