@@ -16,7 +16,7 @@
 		<input type="password" name="password" id="password" value="" placeholder="Password" autocomplete="off" autocapitalize="off" autofocus>
 	</div>
 
-	<?php echo HTML::anchor(Base::get_url('login', array('action' => 'logout')), 'Cancel & Logout', array('data-inline' => 'true', 'data-role' => 'button')) ?>
+	<?php echo HTML::anchor(Base::get_url('login', array('action' => 'logout')), 'Cancel & Logout', array('data-inline' => 'true', 'data-role' => 'button', 'data-ajax' => 'false')) ?>
 	<?php echo Form::submit(NULL, 'Re-Login', array('class' => 'login_button', 'data-icon' => 'arrow-r', 'data-iconpos' => 'right', 'data-inline' => 'true', 'data-theme' => 'b')); ?>
 	<?php echo Form::close(); ?>
 </div>
