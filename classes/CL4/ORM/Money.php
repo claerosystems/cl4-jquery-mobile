@@ -25,7 +25,7 @@ class CL4_ORM_Money extends CL4_ORM_Text {
 	} // function save
 
 	public static function view($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
-		return ($value > 0) ? '<i class="fa fa-usd cost"></i>' . number_format($value,2) : '';
+		return ($value > 0) ? '<i class="fa fa-usd cost"></i>' . number_format($value,2) : 0;
 	}
 
 	public static function view_html($value, $column_name, ORM $orm_model = NULL, array $options = array(), $source = NULL) {
