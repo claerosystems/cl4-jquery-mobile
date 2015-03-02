@@ -14,7 +14,7 @@ class CL4_ORM_Money extends CL4_ORM_Text {
 		} else if (strpos($attributes['class'], 'cl4_money') != 0) {
 			$attributes['class'] .= ' cl4_money';
 		}
-		$value = ($value > 0) ? number_format($value, 2) : '';
+		$value = ($value > 0) ? number_format($value, 2) : 0;
 		return parent::edit($column_name, $html_name, $value, $attributes, $options, $orm_model);
 	}
 
