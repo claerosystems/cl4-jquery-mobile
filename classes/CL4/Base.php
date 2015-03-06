@@ -571,6 +571,8 @@ class CL4_Base {
 	/**
 	 * Send an email.
 	 *
+	 * todo: refactor to handle options better
+	 *
 	 * @param       $from
 	 * @param       $to
 	 * @param       $subject
@@ -608,6 +610,8 @@ class CL4_Base {
 				}
 			}
 
+			$headers = ( ! empty($options['headers'])) ? $options['headers'] : array();
+
 			$message = array(
 				'html' => Base::get_view('email/header') . $html_content . Base::get_view('email/footer'),
 				'text' => $text_content,
@@ -615,7 +619,7 @@ class CL4_Base {
 				'from_email' => $from_email,
 				'from_name' => $from_name,
 				'to' => $to,
-				//'headers' => array('Reply-To' => $from_email),
+				'headers' => $headers, //array('Reply-To' => $from_email),
 				//'important' => false,
 				'track_opens' => null,
 				'track_clicks' => null,
