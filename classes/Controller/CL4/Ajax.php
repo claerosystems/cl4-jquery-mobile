@@ -26,7 +26,7 @@ class Controller_CL4_Ajax extends Controller_Base {
 
 	public function action_after() {
 		if ( ! empty($this->status)) $this->output['status'] = $this->status;
-		if ( ! empty($this->html)) $this->output['html'] = $this->html;
+		if ( ! empty($this->html) || $this->html == 0) $this->output['html'] = $this->html;
 
 		$result = json_encode($this->output);
 

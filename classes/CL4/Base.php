@@ -384,7 +384,7 @@ class CL4_Base {
 		} else {
 			// try to use the saved setting if one exists, otherwise use the default
 			$saved_value = $source->setting($parameter_name);
-			if ( ! empty($saved_value)) {
+			if ( ! empty($saved_value) || $saved_value == 0) {
 				//echo "<p>found saved value ($parameter_name, $saved_value)</p>";
 				return $saved_value;
 			} else {
