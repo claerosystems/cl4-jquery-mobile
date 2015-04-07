@@ -13,12 +13,12 @@ class Model_CL4_User_Admin extends Model_User {
 		$this->_table_columns['password_confirm'] = $this->_table_columns['password'];
 		$this->_display_order[45] = 'password_confirm';
 
-		// display the group field
+		// display the permission fields
 		$this->_has_many['group']['edit_flag'] = TRUE;
 		$this->_has_many['group']['view_flag'] = TRUE;
 
 		parent::_initialize();
-	} // function _initialize
+	}
 
 	public function rules() {
 		$rules = parent::rules();
@@ -27,7 +27,7 @@ class Model_CL4_User_Admin extends Model_User {
 		unset($rules['password']);
 
 		return $rules;
-	} // function rules
+	}
 
 	public function filters() {
 		$filters = parent::filters();
@@ -35,7 +35,7 @@ class Model_CL4_User_Admin extends Model_User {
 		unset($filters['password'], $filters['password_confirm']);
 
 		return $filters;
-	} // function filters
+	}
 
 	/**
 	 * Updates or Creates the record depending on loaded()
@@ -72,7 +72,7 @@ class Model_CL4_User_Admin extends Model_User {
 		}
 
 		return parent::save($validation);
-	} // function save
+	}
 
 	/**
 	 * Same as parent _build_select, but, if set, the password_confirm column is not added to the select statement
@@ -99,4 +99,4 @@ class Model_CL4_User_Admin extends Model_User {
 
 		return $columns;
 	}
-} // class
+}
