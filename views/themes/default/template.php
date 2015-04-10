@@ -45,11 +45,12 @@
 		<script src="/cl4/js/base.js"></script>
 	<?php } else { ?>
 		<?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
-		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
-		<script src="/cl4/js/vendor/jquery.mobile-1.4.5.min.js"></script>
-		<script src="/cl4/js/vendor/datepicker.js"></script>
-		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
-		<script src="/cl4/js/base.js"></script>
+		<?php // <script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script> ?>
+		<?php // <script src="/cl4/js/vendor/jquery.mobile-1.4.5.min.js"></script> ?>
+		<?php // <script src="/cl4/js/vendor/datepicker.js"></script> ?>
+		<?php // <script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script> ?>
+		<?php // <script src="/cl4/js/base.js"></script> ?>
+		<script src="/cl4/js/combined.min.js"></script>
 	<?php } ?>
 	<?php if ( ! empty($custom_js)) { ?>
 		<?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '"></script>'; ?>
