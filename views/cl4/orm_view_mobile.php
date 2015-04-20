@@ -13,7 +13,11 @@ if ($any_visible) { ?>
 
 				<div class="ui-field-contain">
 					<?php echo $form_field_html[$column]['label']; ?>
-					<?php echo $form_field_html[$column]['field'], $form_field_html[$column]['help']; ?>
+					<?php if ( ! is_array($form_field_html[$column]['field'])) { ?>
+						<?php echo $form_field_html[$column]['field'], $form_field_html[$column]['help']; ?>
+					<?php } else { ?>
+
+					<?php } ?>
 				</div>
 			<?php
 			} // if
