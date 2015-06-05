@@ -313,24 +313,16 @@ class Controller_CL4_Login extends Controller_Base {
 
 					$user->complete_login();
 
+
 					// check for redirect and do it
 					if ( ! empty($redirect) && is_string($redirect)) {
-						// Redirect after a successful login, but check permissions first
-						$redirect_request = Request::factory($redirect);
-						$redirect_controller = $redirect_request->controller();
-						if ( ! empty($redirect_controller)) {
-							$next_controller = 'Controller_' . $redirect_request->controller();
-							$next_controller = new $next_controller($redirect_request, Response::factory());
-							if (Auth::instance()->allowed($next_controller, $redirect_request->action())) {
-								// they have permission to access the page, so redirect them there
-								$this->login_success_redirect($redirect);
-							} else {
-								// they don't have permission to access the page, so just go to the default page
-								$this->login_success_redirect();
-							}
-						} else {
-							$this->login_success_redirect();
-						}
+						// Redirect after a successful login
+
+						// todo: check permissions?
+						// todo: check valid path?
+
+						// redirect
+						$this->login_success_redirect($redirect);
 					} else {
 						// redirect to the default location
 						$this->login_success_redirect();
@@ -352,11 +344,12 @@ class Controller_CL4_Login extends Controller_Base {
 
 		if ( ! empty($timed_out)) {
 			// they have come from the timeout page, so try to send them back to their original page
-			$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'timedout')) . $this->get_redirect_query());
+			$this->redirect(Base::get_url(Route::name(Request::current()->route()), array('action' => 'timedout')) . $this->get_redirect_query());
+			//$this->redirect(Route::get(Route::name(Request::current()->route()))->uri(array('action' => 'timedout')) . $this->get_redirect_query());
 		}
 
 		//$this->template->on_load_js .= file_get_contents(ABS_ROOT . '/html/js/onload_login.js') . EOL;
-		$this->template->body_html = View::factory($this->default_view)
+		$this->template->body_html = Base::get_view($this->default_view)
 			->set('redirect', $redirect)
 			->set('username', $username)
 			->set('password', $password)
@@ -612,7 +605,7 @@ class Controller_CL4_Login extends Controller_Base {
 
 		$this->template->page_name = 'timedout';
 		$this->template->page_title = 'Timed Out';
-		$this->template->body_html = View::factory('cl4/cl4login/timed_out')
+		$this->template->body_html = Base::get_view('cl4/cl4login/timed_out')
 			->set('redirect', $redirect)
 			->set('username', $user->username);
 	}
