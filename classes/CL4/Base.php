@@ -612,8 +612,11 @@ class CL4_Base {
 
 			$headers = ( ! empty($options['headers'])) ? $options['headers'] : array();
 
+			$header_template_options = array();
+			if ( ! empty($options['skip_header_logo'])) $header_template_options['skip_header_logo'] = 1;
+
 			$message = array(
-				'html' => Base::get_view('email/header') . $html_content . Base::get_view('email/footer'),
+				'html' => Base::get_view('email/header', $header_template_options) . $html_content . Base::get_view('email/footer'),
 				'text' => $text_content,
 				'subject' => $subject,
 				'from_email' => $from_email,
