@@ -39,6 +39,13 @@
 
 	<?php if (DEVELOPMENT_FLAG) { ?>
 		<script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script>
+		<script>
+			$(document).on("mobileinit", function () {
+				$.extend($.mobile, {
+					ajaxEnabled: false
+				});
+			});
+		</script>
 		<script src="/cl4/js/vendor/jquery.mobile-1.4.5.js"></script>
 		<script src="/cl4/js/vendor/datepicker.js"></script>
 		<script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
