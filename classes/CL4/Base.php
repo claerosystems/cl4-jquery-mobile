@@ -525,11 +525,11 @@ class CL4_Base {
 			'&uacute;'=>'u', '&ugrave;'=>'u', '&ucirc;'=>'u', '&uuml;'=>'u', '&yacute;'=>'y',
 			'&szlig;'=>'sz', '&thorn;'=>'thorn', '&yuml;'=>'y'
 		);
-		$toClean = str_replace('&', '-and-', $toClean);
+		// 20151203 CSN comenting this out: $toClean = str_replace('&', '-and-', $toClean);
 		//$toClean = trim(preg_replace('/[^\w\d_ -]/si', '', $toClean)); // remove all illegal chars
-		$toClean = str_replace(', ', '-', $toClean);
-		$toClean = str_replace(' ', '_', $toClean);
-		$toClean = str_replace('--', '-', $toClean);
+		// 20151203 CSN comenting this out: $toClean = str_replace(', ', '-', $toClean);
+		// 20151203 CSN comenting this out: $toClean = str_replace(' ', '_', $toClean);
+		// 20151203 CSN comenting this out: $toClean = str_replace('--', '-', $toClean);
 		//$toClean = strstr($toClean, $normalizeChars);
 		//$toClean = htmlentities($toClean);
 
@@ -539,7 +539,7 @@ class CL4_Base {
 		$b = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
 		$toClean = utf8_decode($toClean);
 		$toClean = strtr($toClean, utf8_decode($a), $b);
-		$toClean = strtolower($toClean);
+		// 20151203 CSN comenting this out: $toClean = strtolower($toClean);
 		$toClean = utf8_encode($toClean);
 
 		$toClean = trim(preg_replace('/[^\w\d_ -]/si', '', $toClean));
