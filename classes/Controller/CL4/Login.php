@@ -576,7 +576,7 @@ class Controller_CL4_Login extends Controller_Base {
 			Base::message('login', 'password_email_partial', array(), Message::$error);
 		}
 
-		$this->redirect('/');
+		$this->redirect(Base::get_url('login'));
 	} // function
 
 
