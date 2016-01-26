@@ -25,6 +25,9 @@ class CL4_Base {
 	public static function convert_phone_to_cl4($phone_number) {
 		$converted = '';
 
+		// remove any leading '+'
+		if (substr($phone_number, 0, 1) == '+') $phone_number = substr($phone_number, 1, strlen($phone_number) - 1);
+
 		// attempt to find the extension
 		$phone_ext_parts = explode('x', $phone_number);
 		if (isset($phone_ext_parts[1])) {
