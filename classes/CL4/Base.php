@@ -68,21 +68,23 @@ class CL4_Base {
 	 * @param $source_file_path
 	 * @param $target_file_path
 	 */
-	public static function copy_media_to_aws($source_file_path, $target_file_path) {
+	public static function copy_media_to_aws($source_file_path, $target_file_path, $bucket = NULL) {
 		$status = FALSE;
+
+		if (empty($bucket)) $bucket = AWS_MEDIA_BUCKET;
 		// copy the file to AWS
 		require_once(APPPATH . '/vendor/s3/S3.php');
 		$s3 = new S3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY);
 		// see if the file is already on AWS
-		if ($s3->getObjectInfo(AWS_MEDIA_BUCKET, $target_file_path, FALSE)) {
+		if ($s3->getObjectInfo($bucket, $target_file_path, FALSE)) {
 			// the file already exists on AWS
 			//Message::add("The file already exists on S3: " .  AWS_MEDIA_BUCKET . '/' . $target_file_path, Message::$debug);
 		} else {
-			if ($s3->putObjectFile($source_file_path, AWS_MEDIA_BUCKET, $target_file_path)) {
+			if ($s3->putObjectFile($source_file_path, $bucket, $target_file_path)) {
 				Message::add("{$target_file_path} stored in cloud.", Message::$debug);
 				$status = TRUE;
 			} else {
-				Message::add("An error occurred and the file was not uploaded to S3:  " . AWS_MEDIA_BUCKET . '/' . $target_file_path, Message::$error);
+				Message::add("An error occurred and the file was not uploaded to S3:  " . $bucket . '/' . $target_file_path, Message::$error);
 			}
 		}
 		return $status;
