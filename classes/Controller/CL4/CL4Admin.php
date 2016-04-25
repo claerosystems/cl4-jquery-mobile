@@ -376,6 +376,9 @@ class Controller_CL4_CL4Admin extends Controller_Private {
 	public function action_export() {
 		$this->load_model('add');
 
+		// set max execution time to 5 minutes
+		ini_set('max_execution_time', 300);
+
 		// set up the admin options
 		$options = array(
 			'mode' => 'view',
