@@ -14,8 +14,11 @@ class CL4_Base {
 	 *
 	 */
 	public static function clean_for_csv($text) {
+		$text = str_replace("\n", ' ', $text);
 
+		return $text;
 	}
+
 	/**
 	 * Attempt to convert the given phone number in to the standard cl4 format, which is x-xxx-xxx-xxxx-xx
 	 * @param $phone_number
