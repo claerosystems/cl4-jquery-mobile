@@ -15,6 +15,10 @@ class CL4_Base {
 	 */
 	public static function clean_for_csv($text) {
 		$text = str_replace("\n", ' ', $text);
+        $text = str_replace(",", ' ', $text);
+        $text = str_replace(";", ' ', $text);
+        $text = str_replace('"', ' ', $text);
+
 
 		return $text;
 	}
