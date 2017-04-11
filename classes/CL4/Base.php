@@ -146,6 +146,29 @@ class CL4_Base {
 		return (is_numeric($amount)) ? '$' . number_format($amount, $decimals) : $amount;
 	}
 
+    /**
+     * Format the given postal code to XXX XXX, will return an empty string if $code is not 6 or 7 characters in length
+     *
+     * @param $code
+     * @return string
+     */
+    public static function format_postal_code($code) {
+        if (strlen($code) == 6) {
+            // add a space
+            $code = substr($code, 0, 3) . ' ' . substr($code, 3, 3);
+        } else if (strlen($code) == 7) {
+            // looks good
+        } else if (strlen($code) < 6) {
+            // looks invalid
+            $code = '';
+        } else {
+            // looks invalid, more than 7 characters
+            $code = '';
+        }
+
+        return strtoupper($code);
+    }
+
 	/**
 	 * Prepare and send a PDF document to the browser using WKHTMLTOPDF
 	 *
