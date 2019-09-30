@@ -31,52 +31,33 @@
         foreach ($meta_tags as $name => $content) {
             if ( ! empty($content)) {
                 echo TAB . HTML::meta($name, $content) . EOL;
-            } // if
-        } // foreach
-    } // if
-    ?>
+            }
+        }
+    }
+?>
+<?php foreach ($styles as $style_url) echo EOL . TAB . '<link rel="stylesheet" href="' . $style_url . '">'; ?>
+<?php if ( ! empty($custom_css)) { ?>
+<?php foreach ($custom_css as $css)  echo EOL . TAB . '<link rel="stylesheet" href="' . $css . '">'; ?>
+<?php  } ?>
 
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <?php if (1 || DEVELOPMENT_FLAG) { ?>
-<?php foreach ($styles as $style_url) echo TAB . '<link rel="stylesheet" href="' . $style_url . '">' . EOL; ?>
-    <?php } else { ?>
-        <?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
-    <?php } ?>
-    <?php if ( ! empty($custom_css)) { ?>
-        <?php foreach ($custom_css as $css)  echo EOL . TAB . TAB . '<link rel="stylesheet" href="' . $css . '">'; ?>
-    <?php  } ?>
+<?php if ( ! empty($extra_head_html)) echo $extra_head_html; ?>
 
-    <?php //<link href='//fonts.googleapis.com/css?family=Droid+Sans+Mono' rel='stylesheet' type='text/css'> ?>
-
-    <?php if (DEVELOPMENT_FLAG) { ?>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery-2.1.1.min.js"></script>
-        <script>
-            $(document).on("mobileinit", function () {
-                $.extend($.mobile, {
-                    ajaxEnabled: false
-                });
-            });
-        </script>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery.mobile-1.4.5.js"></script>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/datepicker.js"></script>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/base.js"></script>
-    <?php } else { ?>
-        <?php // todo: add cdn, compressed, minified, scsss'ed, etc. ?>
-        <?php // <script src="/cl4/js/vendor/jquery-2.1.1.min.js"></script> ?>
-        <?php // <script src="/cl4/js/vendor/jquery.mobile-1.4.5.min.js"></script> ?>
-        <?php // <script src="/cl4/js/vendor/datepicker.js"></script> ?>
-        <?php // <script src="/cl4/js/vendor/jquery.mobile.datepicker.js"></script> ?>
-        <?php // <script src="/cl4/js/base.js"></script> ?>
-        <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/combined.min.js"></script>
-    <?php } ?>
-    <?php if ( ! empty($custom_js)) { ?>
-        <?php foreach ($custom_js as $js)  echo EOL . TAB . TAB . '<script src="' . $js . '"></script>'; ?>
-    <?php  } ?>
-
-    <?php if (0) echo '<script src="/cl4/js/model_create.js"></script>'; ?>
-
-    <?php if ( ! empty($extra_head_html)) echo $extra_head_html; ?>
+<?php if (DEVELOPMENT_FLAG) { ?>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery-2.1.1.min.js"></script>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery.mobile-1.4.5.js"></script>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/datepicker.js"></script>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/vendor/jquery.mobile.datepicker.js"></script>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/base.js"></script>
+<?php } else { ?>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/combined.min.js"></script>
+<?php /* combined.js is:
+// @codekit-append "/vendor/jquery-2.1.1.min.js";
+// @codekit-append "/vendor/jquery.mobile-1.4.5.min.js";
+// @codekit-append "/vendor/datepicker.js";
+// @codekit-append "/vendor/jquery.mobile.datepicker.js";
+// @codekit-append "/base.js";
+    */ ?>
+<?php } ?>
 
     <script>var cl4_in_debug = <?php echo (int) DEBUG_FLAG; ?>;</script>
 </head>
@@ -126,15 +107,25 @@
 
 <?php if ( ! empty($extra_html)) echo $extra_html; ?>
 
-<?php if (1 || DEVELOPMENT_FLAG) { ?>
+<?php if (DEVELOPMENT_FLAG) { ?>
     <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/cl4.js"></script>
     <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/ajax.js"></script>
-    <!--<script src="/cl4/js/model_create.js"></script>-->
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/model_create.js"></script>
 <?php } else { ?>
-
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/cl4.js"></script>
+    <script src="//s3.amazonaws.com/private.trialto.com/media/cl4/js/ajax.js"></script>
 <?php } ?>
 
+<?php if ( ! empty($custom_js)) { ?>
+    <?php foreach ($custom_js as $js)  echo EOL  . TAB . '<script src="' . $js . '"></script>'; ?>
+<?php  } ?>
+
 <script>
+    $(document).on("mobileinit", function () {
+        $.extend($.mobile, {
+            ajaxEnabled: false
+        });
+    });
     $(function() {
         <?php echo ( ! empty($on_load_js)) ? $on_load_js . EOL : ''; ?>
     });
